@@ -3,94 +3,242 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>College Finance HQ</title>
-  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f4f8fb;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    input, button, select {
+      padding: 10px;
+      margin: 10px 5px;
+      border-radius: 4px;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+    .tabs button {
+      margin: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 5px;
+    }
+    .tabs button.active {
+      background-color: #4caf50;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>📊 College Finance HQ</h1>
 
-  <!-- Header -->
-  <header>
-    <div class="container nav">
-      <div class="logo">📈 College Finance HQ</div>
-      <nav>
-        <a href="#">Home</a>
-        <a href="#">Tools</a>
-        <a href="#">Blog</a>
-        <a href="#">Dashboard</a>
-        <a href="#">Log In</a>
-      </nav>
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <button class="active" onclick="showTab('budgetTab', this)">Budget Builder</button>
+      <button onclick="showTab('internshipTab', this)">Internship Tracker</button>
     </div>
-  </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Smart Hub for Financial & Career Success</h1>
-    <p>Helping students thrive financially and professionally.</p>
-    <div class="cta-buttons">
-      <button>Try a Tool</button>
-      <button>Browse Resources</button>
-      <button>Join Community</button>
+    <!-- BUDGET BUILDER TAB -->
+    <div id="budgetTab" class="tab-content active">
+      <h2>💸 Budget Builder</h2>
+      <label>Monthly Income: $</label>
+      <input type="number" id="income" placeholder="e.g. 2000">
+      <hr>
+      <h3>Add Expenses</h3>
+      <input type="text" id="expenseName" placeholder="Expense name">
+      <input type="number" id="expenseAmount" placeholder="Amount">
+      <button onclick="addExpense()">Add Expense</button>
+      <button onclick="clearAll()" style="background-color: #e74c3c; color: white;">Clear All</button>
+
+      <table id="expenseTable">
+        <thead><tr><th>Expense</th><th>Amount ($)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <h3>Summary</h3>
+      <p>Total Expenses: $<span id="totalExpenses">0</span></p>
+      <p>Remaining Savings: $<span id="savings">0</span></p>
+      <p id="feedback" style="font-weight: bold;"></p>
+      <h3>Expense Breakdown</h3>
+      <canvas id="expenseChart" width="400" height="400"></canvas>
     </div>
-  </section>
 
-  <!-- Featured Tools -->
-  <section class="section">
-    <h2>🔍 Featured Tools</h2>
-    <ul>
-      <li>📊 Investment Simulator</li>
-      <li>💸 Budget Builder</li>
-      <li>📍 Internship Tracker</li>
-    </ul>
-  </section>
-<div style="text-align: center; margin-top: 15px;">
-  <a href="budget.html">
-    <button style="padding: 10px 20px; background-color: #0073e6; color: white; border: none; border-radius: 5px;">
-      💸 Try the Budget Builder
-    </button>
-  </a>
-</div>
+    <!-- INTERNSHIP TRACKER TAB -->
+    <div id="internshipTab" class="tab-content">
+      <h2>💼 Internship Tracker</h2>
+      <input type="text" id="company" placeholder="Company name">
+      <input type="text" id="position" placeholder="Position">
+      <select id="status">
+        <option value="Applied">Applied</option>
+        <option value="Interviewing">Interviewing</option>
+        <option value="Offer">Offer</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+      <button onclick="addInternship()">Add Internship</button>
 
+      <table id="internshipTable">
+        <thead><tr><th>Company</th><th>Position</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
 
-  <!-- Events -->
-  <section class="section">
-    <h2>📅 Upcoming Events</h2>
-    <ul>
-      <li>Resume Review Workshop – April 5</li>
-      <li>“How I Got Into JPMorgan” – April 12</li>
-    </ul>
-  </section>
+  <script>
+    // ---------- Tab Switching ----------
+    function showTab(tabId, button) {
+      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      button.classList.add("active");
+    }
 
-  <!-- Blog -->
-  <section class="section">
-    <h2>📰 Latest Blog Posts</h2>
-    <ul>
-      <li>5 Budgeting Hacks for Interns</li>
-      <li>What Recruiters Want in 2025</li>
-    </ul>
-  </section>
+    // ---------- Budget Builder ----------
+    let expenses = [], chart;
 
-  <!-- Dashboard Preview -->
-  <section class="section">
-    <h2>📊 My Dashboard (Preview)</h2>
-    <ul>
-      <li>GPA Tracker</li>
-      <li>Internship Status</li>
-      <li>Resume Upload</li>
-    </ul>
-  </section>
+    window.onload = () => {
+      const savedExpenses = JSON.parse(localStorage.getItem("expenses"));
+      const savedIncome = localStorage.getItem("income");
+      const savedInternships = JSON.parse(localStorage.getItem("internships"));
 
-  <!-- Newsletter -->
-  <section class="newsletter">
-    <h3>📬 Subscribe for Updates</h3>
-    <input type="email" placeholder="Your email">
-    <button>Subscribe</button>
-  </section>
+      if (savedExpenses) {
+        expenses = savedExpenses;
+        renderExpenses();
+        updateChart();
+      }
+      if (savedIncome) document.getElementById("income").value = savedIncome;
+      if (savedInternships) {
+        internships = savedInternships;
+        renderInternships();
+      }
 
-  <!-- Footer -->
-  <footer>
-    <p>© 2025 College Finance HQ | <a href="#">LinkedIn</a> | <a href="#">GitHub</a> | <a href="#">Contact</a></p>
-  </footer>
+      updateSummary();
+    };
 
+    function addExpense() {
+      const name = document.getElementById("expenseName").value;
+      const amount = parseFloat(document.getElementById("expenseAmount").value);
+      if (!name || isNaN(amount)) return alert("Please enter valid expense info.");
+
+      expenses.push({ name, amount });
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+      localStorage.setItem("income", document.getElementById("income").value);
+      renderExpenses(); updateSummary(); updateChart();
+    }
+
+    function renderExpenses() {
+      const tbody = document.getElementById("expenseTable").querySelector("tbody");
+      tbody.innerHTML = "";
+      expenses.forEach(exp => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${exp.name}</td><td>$${exp.amount.toFixed(2)}</td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    function updateSummary() {
+      const income = parseFloat(document.getElementById("income").value) || 0;
+      const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+      const savings = income - total;
+      document.getElementById("totalExpenses").textContent = total.toFixed(2);
+      document.getElementById("savings").textContent = savings.toFixed(2);
+      const feedback = document.getElementById("feedback");
+      if (savings > 0) {
+        feedback.textContent = "✅ You're saving money. Nice work!";
+        feedback.style.color = "green";
+      } else if (savings === 0) {
+        feedback.textContent = "⚠️ You're breaking even. Watch your spending.";
+        feedback.style.color = "orange";
+      } else {
+        feedback.textContent = "❌ You're overspending. Time to adjust your budget!";
+        feedback.style.color = "red";
+      }
+    }
+
+    function updateChart() {
+      const labels = expenses.map(e => e.name);
+      const data = expenses.map(e => e.amount);
+      if (chart) chart.destroy();
+      const ctx = document.getElementById("expenseChart").getContext("2d");
+      chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+    }
+
+    function clearAll() {
+      expenses = [];
+      document.getElementById("income").value = '';
+      document.getElementById("expenseName").value = '';
+      document.getElementById("expenseAmount").value = '';
+      renderExpenses(); updateSummary();
+      if (chart) { chart.destroy(); chart = null; }
+      localStorage.removeItem("expenses");
+      localStorage.removeItem("income");
+    }
+
+    document.getElementById("income").addEventListener("input", () => {
+      localStorage.setItem("income", document.getElementById("income").value);
+      updateSummary();
+    });
+
+    // ---------- Internship Tracker ----------
+    let internships = [];
+
+    function addInternship() {
+      const company = document.getElementById("company").value;
+      const position = document.getElementById("position").value;
+      const status = document.getElementById("status").value;
+      if (!company || !position) return alert("Please fill in all internship fields.");
+      internships.push({ company, position, status });
+      localStorage.setItem("internships", JSON.stringify(internships));
+      renderInternships();
+    }
+
+    function renderInternships() {
+      const tbody = document.getElementById("internshipTable").querySelector("tbody");
+      tbody.innerHTML = "";
+      internships.forEach(entry => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${entry.company}</td><td>${entry.position}</td><td>${entry.status}</td>`;
+        tbody.appendChild(row);
+      });
+    }
+  </script>
 </body>
 </html>
+
