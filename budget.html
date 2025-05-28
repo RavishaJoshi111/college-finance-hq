@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Budget Builder</title>
-  <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -35,7 +33,6 @@
     }
   </style>
 </head>
-
 <body>
   <div class="container">
     <h2>💸 Budget Builder</h2>
@@ -58,8 +55,7 @@
           <th>Amount ($)</th>
         </tr>
       </thead>
-      <tbody>
-      </tbody>
+      <tbody></tbody>
     </table>
 
     <h3>Summary</h3>
@@ -75,6 +71,24 @@
     let expenses = [];
     let chart;
 
+    // Load data from localStorage on page load
+    window.onload = () => {
+      const savedExpenses = JSON.parse(localStorage.getItem("expenses"));
+      const savedIncome = localStorage.getItem("income");
+
+      if (savedExpenses) {
+        expenses = savedExpenses;
+        renderExpenses();
+        updateChart();
+      }
+
+      if (savedIncome) {
+        document.getElementById("income").value = savedIncome;
+      }
+
+      updateSummary();
+    };
+
     function addExpense() {
       const name = document.getElementById("expenseName").value;
       const amount = parseFloat(document.getElementById("expenseAmount").value);
@@ -84,9 +98,14 @@
       }
 
       expenses.push({ name, amount });
+
+      // Save to localStorage
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+      localStorage.setItem("income", document.getElementById("income").value);
+
       renderExpenses();
       updateSummary();
-      updateChart(); 
+      updateChart();
     }
 
     function renderExpenses() {
@@ -153,19 +172,34 @@
 
     function clearAll() {
       expenses = [];
+
+      // Clear input fields
       document.getElementById("income").value = '';
       document.getElementById("expenseName").value = '';
       document.getElementById("expenseAmount").value = '';
+
+      // Reset table, summary, feedback
       renderExpenses();
       updateSummary();
+
+      // Clear chart
       if (chart) {
         chart.destroy();
         chart = null;
       }
+
+      // Clear localStorage
+      localStorage.removeItem("expenses");
+      localStorage.removeItem("income");
     }
 
-    document.getElementById("income").addEventListener("input", updateSummary);
+    // Save income live when typed
+    document.getElementById("income").addEventListener("input", () => {
+      localStorage.setItem("income", document.getElementById("income").value);
+      updateSummary();
+    });
   </script>
 </body>
 </html>
+
 
