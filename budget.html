@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <head>
   <meta charset="UTF-8">
   <title>Budget Builder</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
-</head>
     body {
       font-family: Arial, sans-serif;
       padding: 30px;
@@ -34,6 +35,8 @@
       border-bottom: 1px solid #ccc;
     }
   </style>
+</head>
+
 </head>
 <body>
   <div class="container">
@@ -71,18 +74,20 @@
   <script>
     let expenses = [];
 
-    function addExpense() {
-      const name = document.getElementById("expenseName").value;
-      const amount = parseFloat(document.getElementById("expenseAmount").value);
-      if (!name || isNaN(amount)) {
-        alert("Please enter a valid expense and amount.");
-        return;
-      }
+function addExpense() {
+  const name = document.getElementById("expenseName").value;
+  const amount = parseFloat(document.getElementById("expenseAmount").value);
+  if (!name || isNaN(amount)) {
+    alert("Please enter a valid expense and amount.");
+    return;
+  }
 
-      expenses.push({ name, amount });
-      renderExpenses();
-      updateSummary();
-    }
+  expenses.push({ name, amount });
+  renderExpenses();
+  updateSummary();
+  updateChart(); 
+}
+
 
     function renderExpenses() {
       const table = document.getElementById("expenseTable").querySelector("tbody");
