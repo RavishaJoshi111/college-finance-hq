@@ -36,7 +36,6 @@
   </style>
 </head>
 
-</head>
 <body>
   <div class="container">
     <h2>💸 Budget Builder</h2>
@@ -50,6 +49,7 @@
     <input type="text" id="expenseName" placeholder="Expense name">
     <input type="number" id="expenseAmount" placeholder="Amount">
     <button onclick="addExpense()">Add Expense</button>
+    <button onclick="clearAll()" style="background-color: #e74c3c; color: white;">Clear All</button>
 
     <table id="expenseTable">
       <thead>
@@ -66,27 +66,28 @@
     <p>Total Expenses: $<span id="totalExpenses">0</span></p>
     <p>Remaining Savings: $<span id="savings">0</span></p>
     <p id="feedback" style="font-weight: bold;"></p>
+
+    <h3>Expense Breakdown</h3>
+    <canvas id="expenseChart" width="400" height="400"></canvas>
   </div>
-<h3>Expense Breakdown</h3>
-<canvas id="expenseChart" width="400" height="400"></canvas>
 
   <script>
     let expenses = [];
+    let chart;
 
-function addExpense() {
-  const name = document.getElementById("expenseName").value;
-  const amount = parseFloat(document.getElementById("expenseAmount").value);
-  if (!name || isNaN(amount)) {
-    alert("Please enter a valid expense and amount.");
-    return;
-  }
+    function addExpense() {
+      const name = document.getElementById("expenseName").value;
+      const amount = parseFloat(document.getElementById("expenseAmount").value);
+      if (!name || isNaN(amount)) {
+        alert("Please enter a valid expense and amount.");
+        return;
+      }
 
-  expenses.push({ name, amount });
-  renderExpenses();
-  updateSummary();
-  updateChart(); 
-}
-
+      expenses.push({ name, amount });
+      renderExpenses();
+      updateSummary();
+      updateChart(); 
+    }
 
     function renderExpenses() {
       const table = document.getElementById("expenseTable").querySelector("tbody");
@@ -118,41 +119,53 @@ function addExpense() {
         feedback.style.color = "red";
       }
     }
-let chart; // Global chart variable
 
-function updateChart() {
-  const labels = expenses.map(e => e.name);
-  const data = expenses.map(e => e.amount);
+    function updateChart() {
+      const labels = expenses.map(e => e.name);
+      const data = expenses.map(e => e.amount);
 
-  if (chart) {
-    chart.destroy(); // Remove old chart before redrawing
-  }
+      if (chart) {
+        chart.destroy();
+      }
 
-  const ctx = document.getElementById("expenseChart").getContext("2d");
-  chart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: data,
-        backgroundColor: [
-          '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-        ],
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'bottom'
+      const ctx = document.getElementById("expenseChart").getContext("2d");
+      chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: [
+              '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+            ],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
         }
+      });
+    }
+
+    function clearAll() {
+      expenses = [];
+      document.getElementById("income").value = '';
+      document.getElementById("expenseName").value = '';
+      document.getElementById("expenseAmount").value = '';
+      renderExpenses();
+      updateSummary();
+      if (chart) {
+        chart.destroy();
+        chart = null;
       }
     }
-  });
-}
 
-    // Auto-update summary if income is typed
     document.getElementById("income").addEventListener("input", updateSummary);
   </script>
 </body>
 </html>
+
