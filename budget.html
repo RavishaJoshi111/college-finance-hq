@@ -58,8 +58,8 @@
 
     <!-- Tab Navigation -->
     <div class="tabs">
-      <button class="active" onclick="showTab('budgetTab')">Budget Builder</button>
-      <button onclick="showTab('internshipTab')">Internship Tracker</button>
+    <button class="active" onclick="showTab('budgetTab', this)">Budget Builder</button>
+    <button onclick="showTab('internshipTab', this)">Internship Tracker</button>
     </div>
 
     <!-- BUDGET BUILDER TAB -->
@@ -109,12 +109,13 @@
 
   <script>
     // ------------------ Tab Switching ------------------
-    function showTab(tabId) {
-      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
-      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-      event.target.classList.add("active");
-    }
+    function showTab(tabId, btn) {
+  document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+  document.querySelectorAll(".tabs button").forEach(button => button.classList.remove("active"));
+  document.getElementById(tabId).classList.add("active");
+  btn.classList.add("active");
+}
+
 
     // ------------------ Budget Builder ------------------
     let expenses = [], chart;
