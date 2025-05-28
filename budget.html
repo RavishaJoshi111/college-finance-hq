@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Budget Builder</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f4f8fb;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px 5px;
+      border-radius: 4px;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>💸 Budget Builder</h2>
+
+    <label>Monthly Income: $</label>
+    <input type="number" id="income" placeholder="e.g. 2000">
+
+    <hr>
+
+    <h3>Add Expenses</h3>
+    <input type="text" id="expenseName" placeholder="Expense name">
+    <input type="number" id="expenseAmount" placeholder="Amount">
+    <button onclick="addExpense()">Add Expense</button>
+
+    <table id="expenseTable">
+      <thead>
+        <tr>
+          <th>Expense</th>
+          <th>Amount ($)</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+
+    <h3>Summary</h3>
+    <p>Total Expenses: $<span id="totalExpenses">0</span></p>
+    <p>Remaining Savings: $<span id="savings">0</span></p>
+    <p id="feedback" style="font-weight: bold;"></p>
+  </div>
+
+  <script>
+    let expenses = [];
+
+    function addExpense() {
+      const name = document.getElementById("expenseName").value;
+      const amount = parseFloat(document.getElementById("expenseAmount").value);
+      if (!name || isNaN(amount)) {
+        alert("Please enter a valid expense and amount.");
+        return;
+      }
+
+      expenses.push({ name, amount });
+      renderExpenses();
+      updateSummary();
+    }
+
+    function renderExpenses() {
+      const table = document.getElementById("expenseTable").querySelector("tbody");
+      table.innerHTML = "";
+      expenses.forEach(exp => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${exp.name}</td><td>$${exp.amount.toFixed(2)}</td>`;
+        table.appendChild(row);
+      });
+    }
+
+    function updateSummary() {
+      const income = parseFloat(document.getElementById("income").value) || 0;
+      const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+      const savings = income - total;
+
+      document.getElementById("totalExpenses").textContent = total.toFixed(2);
+      document.getElementById("savings").textContent = savings.toFixed(2);
+
+      const feedback = document.getElementById("feedback");
+      if (savings > 0) {
+        feedback.textContent = "✅ You're saving money. Nice work!";
+        feedback.style.color = "green";
+      } else if (savings === 0) {
+        feedback.textContent = "⚠️ You're breaking even. Watch your spending.";
+        feedback.style.color = "orange";
+      } else {
+        feedback.textContent = "❌ You're overspending. Time to adjust your budget!";
+        feedback.style.color = "red";
+      }
+    }
+
+    // Auto-update summary if income is typed
+    document.getElementById("income").addEventListener("input", updateSummary);
+  </script>
+</body>
+</html>
