@@ -1,245 +1,1293 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>College Finance HQ</title>
+  <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
-      background: #f4f8fb;
-    }
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: white;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    input, button, select {
-      padding: 10px;
-      margin: 10px 5px;
-      border-radius: 4px;
-    }
-    table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-    }
-    .tabs button {
-      margin: 5px;
-      padding: 10px 20px;
-      cursor: pointer;
-      background-color: #e0e0e0;
-      border: none;
-      border-radius: 5px;
-    }
-    .tabs button.active {
-      background-color: #4caf50;
-      color: white;
-    }
-    .tab-content {
-      display: none;
-    }
-    .tab-content.active {
-      display: block;
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📊 College Finance HQ</h1>
-
-    <!-- Tab Navigation -->
-    <div class="tabs">
-      <button class="active" onclick="showTab('budgetTab', this)">Budget Builder</button>
-      <button onclick="showTab('internshipTab', this)">Internship Tracker</button>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">Student planning workspace</p>
+      <h1>College Finance HQ</h1>
     </div>
-
-    <!-- BUDGET BUILDER TAB -->
-    <div id="budgetTab" class="tab-content active">
-      <h2>💸 Budget Builder</h2>
-      <label>Monthly Income: $</label>
-      <input type="number" id="income" placeholder="e.g. 2000">
-      <hr>
-      <h3>Add Expenses</h3>
-      <input type="text" id="expenseName" placeholder="Expense name">
-      <input type="number" id="expenseAmount" placeholder="Amount">
-      <button onclick="addExpense()">Add Expense</button>
-      <button onclick="clearAll()" style="background-color: #e74c3c; color: white;">Clear All</button>
-
-      <table id="expenseTable">
-        <thead><tr><th>Expense</th><th>Amount ($)</th></tr></thead>
-        <tbody></tbody>
-      </table>
-
-      <h3>Summary</h3>
-      <p>Total Expenses: $<span id="totalExpenses">0</span></p>
-      <p>Remaining Savings: $<span id="savings">0</span></p>
-      <p id="feedback" style="font-weight: bold;"></p>
-      <h3>Expense Breakdown</h3>
-      <canvas id="expenseChart" width="400" height="400"></canvas>
+    <div class="header-stats">
+      <span id="headerSavings">$0 saved</span>
+      <span id="headerApplications">0 applications</span>
     </div>
+  </header>
 
-    <!-- INTERNSHIP TRACKER TAB -->
-    <div id="internshipTab" class="tab-content">
-      <h2>💼 Internship Tracker</h2>
-      <input type="text" id="company" placeholder="Company name">
-      <input type="text" id="position" placeholder="Position">
-      <select id="status">
-        <option value="Applied">Applied</option>
-        <option value="Interviewing">Interviewing</option>
-        <option value="Offer">Offer</option>
-        <option value="Rejected">Rejected</option>
-      </select>
-      <button onclick="addInternship()">Add Internship</button>
+  <main class="app-shell">
+    <nav class="tabs" aria-label="Workspace sections">
+      <button class="active" type="button" data-tab="dashboardTab">Dashboard</button>
+      <button type="button" data-tab="budgetTab">Budget</button>
+      <button type="button" data-tab="careerTab">Career</button>
+      <button type="button" data-tab="recruitingTab">Recruiting</button>
+      <button type="button" data-tab="investingTab">Investing</button>
+    </nav>
 
-      <table id="internshipTable">
-        <thead><tr><th>Company</th><th>Position</th><th>Status</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
+    <section id="dashboardTab" class="tab-content active">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">College Finance HQ dashboard</p>
+          <h2>Command center</h2>
+        </div>
+        <p class="dashboard-summary" id="dashboardSummary">Add your income, expenses, applications, and watchlist to build your HQ.</p>
+      </div>
+
+      <div class="metric-grid">
+        <article class="metric-card">
+          <span>Total income</span>
+          <strong id="dashboardIncome">$0.00</strong>
+        </article>
+        <article class="metric-card">
+          <span>Total spending</span>
+          <strong id="dashboardSpending">$0.00</strong>
+        </article>
+        <article class="metric-card">
+          <span>Savings rate</span>
+          <strong id="dashboardSavingsRate">0%</strong>
+        </article>
+        <article class="metric-card">
+          <span>Top expense category</span>
+          <strong id="dashboardTopCategory">None yet</strong>
+        </article>
+      </div>
+
+      <div class="metric-grid dashboard-kpis">
+        <article class="metric-card accent-card">
+          <span>Active applications</span>
+          <strong id="dashboardActiveApplications">0</strong>
+        </article>
+        <article class="metric-card accent-card">
+          <span>Offers</span>
+          <strong id="dashboardOffers">0</strong>
+        </article>
+        <article class="metric-card accent-card">
+          <span>Referral rate</span>
+          <strong id="dashboardReferralRate">0%</strong>
+        </article>
+        <article class="metric-card accent-card">
+          <span>Watchlist stocks</span>
+          <strong id="dashboardWatchlistCount">0</strong>
+        </article>
+      </div>
+
+      <div class="panel-grid">
+        <section class="panel">
+          <h3>Monthly trend</h3>
+          <div class="chart-wrap">
+            <canvas id="monthlyTrendChart"></canvas>
+          </div>
+        </section>
+        <section class="panel">
+          <h3>Expense categories</h3>
+          <div class="chart-wrap">
+            <canvas id="expenseChart"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <div class="dashboard-grid">
+        <section class="panel">
+          <h3>Budget health</h3>
+          <p class="dashboard-callout" id="dashboardBudgetHealth">No budget data yet.</p>
+          <div class="progress-track" aria-hidden="true">
+            <span id="dashboardSavingsProgress"></span>
+          </div>
+          <dl class="mini-list">
+            <div>
+              <dt>Remaining savings</dt>
+              <dd id="dashboardRemainingSavings">$0.00</dd>
+            </div>
+            <div>
+              <dt>Expenses logged</dt>
+              <dd id="dashboardExpenseCount">0</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="panel">
+          <h3>Career pipeline</h3>
+          <dl class="mini-list">
+            <div>
+              <dt>Next interview</dt>
+              <dd id="dashboardNextInterview">None scheduled</dd>
+            </div>
+            <div>
+              <dt>Most recent application</dt>
+              <dd id="dashboardRecentApplication">None yet</dd>
+            </div>
+          </dl>
+          <div class="table-wrap compact">
+            <table id="dashboardCareerTable">
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Investing snapshot</h3>
+          <dl class="mini-list">
+            <div>
+              <dt>Risk profile</dt>
+              <dd id="dashboardRiskProfile">Conservative</dd>
+            </div>
+            <div>
+              <dt>Compound interest projection</dt>
+              <dd id="dashboardCompoundProjection">$0.00</dd>
+            </div>
+            <div>
+              <dt>DCF estimate</dt>
+              <dd id="dashboardDcfEstimate">$0.00</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="panel">
+          <h3>Expense focus</h3>
+          <ul class="category-list" id="dashboardCategoryList"></ul>
+        </section>
+      </div>
+    </section>
+
+    <section id="budgetTab" class="tab-content">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Budget builder</p>
+          <h2>Income and spending</h2>
+        </div>
+        <button class="danger-button" type="button" id="clearBudgetButton">Clear budget</button>
+      </div>
+
+      <form id="budgetForm" class="form-grid">
+        <label>
+          Monthly income
+          <input type="number" id="income" min="0" step="0.01" placeholder="2000">
+        </label>
+        <label>
+          Expense name
+          <input type="text" id="expenseName" placeholder="Rent, books, groceries">
+        </label>
+        <label>
+          Amount
+          <input type="number" id="expenseAmount" min="0" step="0.01" placeholder="75">
+        </label>
+        <label>
+          Category
+          <select id="expenseCategory">
+            <option>Housing</option>
+            <option>Food</option>
+            <option>Transportation</option>
+            <option>School</option>
+            <option>Entertainment</option>
+            <option>Health</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label>
+          Month
+          <input type="month" id="expenseMonth">
+        </label>
+        <button class="primary-button" type="submit">Add expense</button>
+      </form>
+
+      <p id="budgetFeedback" class="feedback"></p>
+
+      <div class="table-wrap">
+        <table id="expenseTable">
+          <thead>
+            <tr>
+              <th>Expense</th>
+              <th>Category</th>
+              <th>Month</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="careerTab" class="tab-content">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Career and internship tracker</p>
+          <h2>Applications</h2>
+        </div>
+        <button class="danger-button" type="button" id="clearCareerButton">Clear tracker</button>
+      </div>
+
+      <form id="careerForm" class="form-grid">
+        <label>
+          Company
+          <input type="text" id="company" placeholder="Goldman Sachs">
+        </label>
+        <label>
+          Role
+          <input type="text" id="role" placeholder="Summer Analyst Intern">
+        </label>
+        <label>
+          Date applied
+          <input type="date" id="dateApplied">
+        </label>
+        <label>
+          Status
+          <select id="applicationStatus">
+            <option>Applied</option>
+            <option>Interviewing</option>
+            <option>Offer</option>
+            <option>Rejected</option>
+            <option>Accepted</option>
+          </select>
+        </label>
+        <label>
+          Referral?
+          <select id="referral">
+            <option>No</option>
+            <option>Yes</option>
+          </select>
+        </label>
+        <label>
+          Interview date
+          <input type="date" id="interviewDate">
+        </label>
+        <label class="full-span">
+          Notes
+          <textarea id="notes" rows="3" placeholder="Recruiter name, next step, prep reminders"></textarea>
+        </label>
+        <button class="primary-button" type="submit">Add application</button>
+      </form>
+
+      <div class="table-wrap">
+        <table id="careerTable">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Role</th>
+              <th>Date applied</th>
+              <th>Status</th>
+              <th>Referral?</th>
+              <th>Interview date</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="recruitingTab" class="tab-content">
+      <div class="section-header recruiter-header">
+        <div>
+          <p class="eyebrow">Recruiting Intelligence Dashboard</p>
+          <h2>Recruiting analytics</h2>
+        </div>
+        <p class="dashboard-summary">Track outcomes, referrals, HireVues, interviews, offers, and networking follow-ups in one polished view.</p>
+      </div>
+
+      <div class="recruiting-hero">
+        <div>
+          <p class="eyebrow">Pipeline signal</p>
+          <h3 id="recruitingInsight">Add recruiting data to generate your first insight.</h3>
+        </div>
+        <button class="danger-button" type="button" id="clearRecruitingButton">Clear recruiting data</button>
+      </div>
+
+      <div class="metric-grid recruiting-metrics">
+        <article class="metric-card">
+          <span>Total applications</span>
+          <strong id="recruitingTotalApplications">0</strong>
+        </article>
+        <article class="metric-card">
+          <span>Response rate</span>
+          <strong id="recruitingResponseRate">0%</strong>
+        </article>
+        <article class="metric-card">
+          <span>Interview rate</span>
+          <strong id="recruitingInterviewRate">0%</strong>
+        </article>
+        <article class="metric-card">
+          <span>Offer rate</span>
+          <strong id="recruitingOfferRate">0%</strong>
+        </article>
+        <article class="metric-card accent-card">
+          <span>Referral success rate</span>
+          <strong id="recruitingReferralSuccessRate">0%</strong>
+        </article>
+        <article class="metric-card accent-card">
+          <span>Non-referral success rate</span>
+          <strong id="recruitingNonReferralSuccessRate">0%</strong>
+        </article>
+      </div>
+
+      <div class="panel-grid">
+        <section class="panel">
+          <h3>Add recruiting application</h3>
+          <form id="recruitingForm" class="form-grid">
+            <label>
+              Company
+              <input type="text" id="recruitingCompany" placeholder="Morgan Stanley">
+            </label>
+            <label>
+              Role
+              <input type="text" id="recruitingRole" placeholder="Investment Banking Summer Analyst">
+            </label>
+            <label>
+              Date applied
+              <input type="date" id="recruitingDateApplied">
+            </label>
+            <label>
+              Status
+              <select id="recruitingStatus">
+                <option>Applied</option>
+                <option>HireVue</option>
+                <option>Interviewing</option>
+                <option>Offer</option>
+                <option>Rejected</option>
+                <option>Accepted</option>
+              </select>
+            </label>
+            <label>
+              Referral
+              <select id="recruitingReferral">
+                <option>No</option>
+                <option>Yes</option>
+              </select>
+            </label>
+            <label>
+              HireVue
+              <select id="recruitingHireVue">
+                <option>No</option>
+                <option>Yes</option>
+              </select>
+            </label>
+            <label>
+              Interview
+              <select id="recruitingInterview">
+                <option>No</option>
+                <option>Yes</option>
+              </select>
+            </label>
+            <label>
+              Offer
+              <select id="recruitingOffer">
+                <option>No</option>
+                <option>Yes</option>
+              </select>
+            </label>
+            <label class="full-span">
+              Notes
+              <textarea id="recruitingNotes" rows="3" placeholder="Alumni referral, HireVue deadline, follow-up plan"></textarea>
+            </label>
+            <button class="primary-button" type="submit">Add recruiting record</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h3>Networking CRM</h3>
+          <form id="networkingForm" class="form-grid">
+            <label>
+              Contact name
+              <input type="text" id="contactName" placeholder="Avery Chen">
+            </label>
+            <label>
+              Company
+              <input type="text" id="contactCompany" placeholder="BlackRock">
+            </label>
+            <label>
+              Role
+              <input type="text" id="contactRole" placeholder="Analyst">
+            </label>
+            <label>
+              Last contacted date
+              <input type="date" id="lastContacted">
+            </label>
+            <label>
+              Follow-up date
+              <input type="date" id="followUpDate">
+            </label>
+            <label class="full-span">
+              Notes
+              <textarea id="contactNotes" rows="3" placeholder="Conversation notes, warm intro, next message"></textarea>
+            </label>
+            <button class="primary-button" type="submit">Add contact</button>
+          </form>
+        </section>
+      </div>
+
+      <div class="panel-grid recruiting-chart-grid">
+        <section class="panel">
+          <h3>Application statuses</h3>
+          <div class="chart-wrap">
+            <canvas id="recruitingStatusChart"></canvas>
+          </div>
+        </section>
+        <section class="panel">
+          <h3>Referral vs non-referral outcomes</h3>
+          <div class="chart-wrap">
+            <canvas id="recruitingReferralChart"></canvas>
+          </div>
+        </section>
+        <section class="panel wide-panel">
+          <h3>Monthly applications trend</h3>
+          <div class="chart-wrap">
+            <canvas id="recruitingMonthlyChart"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <div class="panel-grid">
+        <section class="panel">
+          <h3>Recruiting records</h3>
+          <div class="table-wrap compact">
+            <table id="recruitingTable">
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Role</th>
+                  <th>Date applied</th>
+                  <th>Status</th>
+                  <th>Referral</th>
+                  <th>HireVue</th>
+                  <th>Interview</th>
+                  <th>Offer</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Networking contacts</h3>
+          <div class="table-wrap compact">
+            <table id="networkingTable">
+              <thead>
+                <tr>
+                  <th>Contact</th>
+                  <th>Company</th>
+                  <th>Role</th>
+                  <th>Last contacted</th>
+                  <th>Follow-up</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="investingTab" class="tab-content">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Investing hub</p>
+          <h2>Watch, learn, calculate</h2>
+        </div>
+        <button class="danger-button" type="button" id="clearWatchlistButton">Clear watchlist</button>
+      </div>
+
+      <div class="panel-grid">
+        <section class="panel">
+          <h3>Stock watchlist</h3>
+          <form id="watchlistForm" class="inline-form">
+            <input type="text" id="stockTicker" placeholder="Ticker">
+            <input type="text" id="stockName" placeholder="Company">
+            <input type="number" id="targetPrice" min="0" step="0.01" placeholder="Target price">
+            <button class="primary-button" type="submit">Add</button>
+          </form>
+          <div class="table-wrap compact">
+            <table id="watchlistTable">
+              <thead>
+                <tr>
+                  <th>Ticker</th>
+                  <th>Company</th>
+                  <th>Target</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Risk tolerance quiz</h3>
+          <form id="riskForm" class="stacked-form">
+            <label>
+              Investing timeline
+              <select id="riskTimeline">
+                <option value="1">Less than 2 years</option>
+                <option value="2">2 to 5 years</option>
+                <option value="3">5+ years</option>
+              </select>
+            </label>
+            <label>
+              Market drop reaction
+              <select id="riskReaction">
+                <option value="1">Sell quickly</option>
+                <option value="2">Wait and reassess</option>
+                <option value="3">Buy more if thesis holds</option>
+              </select>
+            </label>
+            <label>
+              Experience level
+              <select id="riskExperience">
+                <option value="1">New investor</option>
+                <option value="2">Some experience</option>
+                <option value="3">Comfortable researching stocks</option>
+              </select>
+            </label>
+          </form>
+          <p id="riskResult" class="result-pill">Conservative</p>
+        </section>
+
+        <section class="panel">
+          <h3>Compound interest calculator</h3>
+          <form id="compoundForm" class="stacked-form">
+            <label>
+              Starting amount
+              <input type="number" id="compoundPrincipal" min="0" step="0.01" value="1000">
+            </label>
+            <label>
+              Monthly contribution
+              <input type="number" id="compoundContribution" min="0" step="0.01" value="100">
+            </label>
+            <label>
+              Annual return %
+              <input type="number" id="compoundRate" step="0.1" value="7">
+            </label>
+            <label>
+              Years
+              <input type="number" id="compoundYears" min="1" step="1" value="10">
+            </label>
+          </form>
+          <p class="calculator-output" id="compoundResult">$0.00</p>
+        </section>
+
+        <section class="panel">
+          <h3>Basic DCF calculator</h3>
+          <form id="dcfForm" class="stacked-form">
+            <label>
+              Current free cash flow
+              <input type="number" id="dcfCashFlow" min="0" step="0.01" value="1000000">
+            </label>
+            <label>
+              Growth rate %
+              <input type="number" id="dcfGrowth" step="0.1" value="5">
+            </label>
+            <label>
+              Discount rate %
+              <input type="number" id="dcfDiscount" step="0.1" value="10">
+            </label>
+            <label>
+              Terminal multiple
+              <input type="number" id="dcfMultiple" min="0" step="0.1" value="12">
+            </label>
+          </form>
+          <p class="calculator-output" id="dcfResult">$0.00</p>
+        </section>
+      </div>
+    </section>
+  </main>
 
   <script>
-    // ------------- Tab Switching Function -------------
-    function showTab(tabId, btn) {
-      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
-      document.querySelectorAll(".tabs button").forEach(button => button.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-      btn.classList.add("active");
-    }
-
-    // ------------- Budget Builder Variables -------------
-    let expenses = [], chart;
-
-    window.onload = () => {
-      const savedExpenses = JSON.parse(localStorage.getItem("expenses"));
-      const savedIncome = localStorage.getItem("income");
-      const savedInternships = JSON.parse(localStorage.getItem("internships"));
-
-      if (savedExpenses) {
-        expenses = savedExpenses;
-        renderExpenses();
-        updateChart();
-      }
-      if (savedIncome) document.getElementById("income").value = savedIncome;
-      if (savedInternships) {
-        internships = savedInternships;
-        renderInternships();
-      }
-
-      updateSummary();
+    const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+    const storageKeys = {
+      expenses: "cfhq_expenses",
+      income: "cfhq_income",
+      careers: "cfhq_careers",
+      watchlist: "cfhq_watchlist",
+      recruiting: "cfhq_recruiting",
+      networking: "cfhq_networking"
     };
 
-    function addExpense() {
-      const name = document.getElementById("expenseName").value;
-      const amount = parseFloat(document.getElementById("expenseAmount").value);
-      if (!name || isNaN(amount)) return alert("Please enter valid expense info.");
+    let expenses = JSON.parse(localStorage.getItem(storageKeys.expenses)) || [];
+    let careers = JSON.parse(localStorage.getItem(storageKeys.careers)) || [];
+    let watchlist = JSON.parse(localStorage.getItem(storageKeys.watchlist)) || [];
+    let recruitingRecords = JSON.parse(localStorage.getItem(storageKeys.recruiting)) || [];
+    let networkingContacts = JSON.parse(localStorage.getItem(storageKeys.networking)) || [];
+    let expenseChart;
+    let monthlyTrendChart;
+    let recruitingStatusChart;
+    let recruitingReferralChart;
+    let recruitingMonthlyChart;
 
-      expenses.push({ name, amount });
-      localStorage.setItem("expenses", JSON.stringify(expenses));
-      localStorage.setItem("income", document.getElementById("income").value);
-      renderExpenses(); updateSummary(); updateChart();
+    const today = new Date();
+    const thisMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+
+    document.getElementById("expenseMonth").value = thisMonth;
+    document.getElementById("income").value = localStorage.getItem(storageKeys.income) || "";
+
+    document.querySelectorAll(".tabs button").forEach((button) => {
+      button.addEventListener("click", () => showTab(button.dataset.tab, button));
+    });
+
+    document.getElementById("income").addEventListener("input", () => {
+      localStorage.setItem(storageKeys.income, document.getElementById("income").value);
+      renderAll();
+    });
+
+    document.getElementById("budgetForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const name = document.getElementById("expenseName").value.trim();
+      const amount = Number(document.getElementById("expenseAmount").value);
+      const category = document.getElementById("expenseCategory").value;
+      const month = document.getElementById("expenseMonth").value || thisMonth;
+
+      if (!name || !amount || amount < 0) {
+        alert("Please enter a valid expense name and amount.");
+        return;
+      }
+
+      expenses.push({ name, amount, category, month });
+      save(storageKeys.expenses, expenses);
+      document.getElementById("expenseName").value = "";
+      document.getElementById("expenseAmount").value = "";
+      document.getElementById("expenseCategory").value = "Housing";
+      document.getElementById("expenseMonth").value = thisMonth;
+      renderAll();
+    });
+
+    document.getElementById("careerForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const company = document.getElementById("company").value.trim();
+      const role = document.getElementById("role").value.trim();
+
+      if (!company || !role) {
+        alert("Please enter a company and role.");
+        return;
+      }
+
+      careers.push({
+        company,
+        role,
+        dateApplied: document.getElementById("dateApplied").value,
+        status: document.getElementById("applicationStatus").value,
+        referral: document.getElementById("referral").value,
+        interviewDate: document.getElementById("interviewDate").value,
+        notes: document.getElementById("notes").value.trim()
+      });
+      save(storageKeys.careers, careers);
+      event.target.reset();
+      renderAll();
+    });
+
+    document.getElementById("watchlistForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const ticker = document.getElementById("stockTicker").value.trim().toUpperCase();
+      const company = document.getElementById("stockName").value.trim();
+      const target = Number(document.getElementById("targetPrice").value);
+
+      if (!ticker || !company) {
+        alert("Please enter a ticker and company.");
+        return;
+      }
+
+      watchlist.push({ ticker, company, target });
+      save(storageKeys.watchlist, watchlist);
+      event.target.reset();
+      renderAll();
+    });
+
+    document.getElementById("recruitingForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const company = document.getElementById("recruitingCompany").value.trim();
+      const role = document.getElementById("recruitingRole").value.trim();
+      const status = document.getElementById("recruitingStatus").value;
+      const offer = document.getElementById("recruitingOffer").value;
+
+      if (!company || !role) {
+        alert("Please enter a company and role.");
+        return;
+      }
+
+      recruitingRecords.push({
+        company,
+        role,
+        dateApplied: document.getElementById("recruitingDateApplied").value,
+        status,
+        referral: document.getElementById("recruitingReferral").value,
+        hireVue: document.getElementById("recruitingHireVue").value,
+        interview: document.getElementById("recruitingInterview").value,
+        offer,
+        notes: document.getElementById("recruitingNotes").value.trim()
+      });
+      save(storageKeys.recruiting, recruitingRecords);
+      event.target.reset();
+      renderAll();
+    });
+
+    document.getElementById("networkingForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const name = document.getElementById("contactName").value.trim();
+      const company = document.getElementById("contactCompany").value.trim();
+
+      if (!name || !company) {
+        alert("Please enter a contact name and company.");
+        return;
+      }
+
+      networkingContacts.push({
+        name,
+        company,
+        role: document.getElementById("contactRole").value.trim(),
+        lastContacted: document.getElementById("lastContacted").value,
+        followUpDate: document.getElementById("followUpDate").value,
+        notes: document.getElementById("contactNotes").value.trim()
+      });
+      save(storageKeys.networking, networkingContacts);
+      event.target.reset();
+      renderAll();
+    });
+
+    document.getElementById("clearBudgetButton").addEventListener("click", () => {
+      expenses = [];
+      document.getElementById("income").value = "";
+      localStorage.removeItem(storageKeys.expenses);
+      localStorage.removeItem(storageKeys.income);
+      renderAll();
+    });
+
+    document.getElementById("clearCareerButton").addEventListener("click", () => {
+      careers = [];
+      localStorage.removeItem(storageKeys.careers);
+      renderAll();
+    });
+
+    document.getElementById("clearWatchlistButton").addEventListener("click", () => {
+      watchlist = [];
+      localStorage.removeItem(storageKeys.watchlist);
+      renderAll();
+    });
+
+    document.getElementById("clearRecruitingButton").addEventListener("click", () => {
+      recruitingRecords = [];
+      networkingContacts = [];
+      localStorage.removeItem(storageKeys.recruiting);
+      localStorage.removeItem(storageKeys.networking);
+      renderAll();
+    });
+
+    document.querySelectorAll("#riskForm select, #compoundForm input, #dcfForm input").forEach((input) => {
+      input.addEventListener("input", renderCalculators);
+      input.addEventListener("change", renderCalculators);
+    });
+
+    function showTab(tabId, button) {
+      document.querySelectorAll(".tab-content").forEach((tab) => tab.classList.remove("active"));
+      document.querySelectorAll(".tabs button").forEach((tabButton) => tabButton.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      button.classList.add("active");
+      renderCharts();
+    }
+
+    function save(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function renderAll() {
+      renderExpenses();
+      renderCareers();
+      renderWatchlist();
+      renderRecruiting();
+      renderNetworking();
+      renderDashboard();
+      renderCalculators();
+      renderCharts();
     }
 
     function renderExpenses() {
-      const tbody = document.getElementById("expenseTable").querySelector("tbody");
+      const tbody = document.querySelector("#expenseTable tbody");
       tbody.innerHTML = "";
-      expenses.forEach(exp => {
+
+      expenses.forEach((expense) => {
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${exp.name}</td><td>$${exp.amount.toFixed(2)}</td>`;
+        row.innerHTML = `
+          <td>${escapeHtml(expense.name)}</td>
+          <td>${escapeHtml(expense.category)}</td>
+          <td>${escapeHtml(expense.month)}</td>
+          <td>${money.format(expense.amount)}</td>
+        `;
         tbody.appendChild(row);
       });
     }
 
-    function updateSummary() {
-      const income = parseFloat(document.getElementById("income").value) || 0;
-      const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-      const savings = income - total;
-      document.getElementById("totalExpenses").textContent = total.toFixed(2);
-      document.getElementById("savings").textContent = savings.toFixed(2);
-      const feedback = document.getElementById("feedback");
-      if (savings > 0) {
-        feedback.textContent = "✅ You're saving money. Nice work!";
-        feedback.style.color = "green";
-      } else if (savings === 0) {
-        feedback.textContent = "⚠️ You're breaking even. Watch your spending.";
-        feedback.style.color = "orange";
-      } else {
-        feedback.textContent = "❌ You're overspending. Time to adjust your budget!";
-        feedback.style.color = "red";
+    function renderCareers() {
+      const tbody = document.querySelector("#careerTable tbody");
+      tbody.innerHTML = "";
+
+      careers.forEach((career) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${escapeHtml(career.company)}</td>
+          <td>${escapeHtml(career.role)}</td>
+          <td>${escapeHtml(career.dateApplied || "-")}</td>
+          <td><span class="status-chip">${escapeHtml(career.status)}</span></td>
+          <td>${escapeHtml(career.referral)}</td>
+          <td>${escapeHtml(career.interviewDate || "-")}</td>
+          <td>${escapeHtml(career.notes || "-")}</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById("headerApplications").textContent = `${careers.length} applications`;
+    }
+
+    function renderWatchlist() {
+      const tbody = document.querySelector("#watchlistTable tbody");
+      tbody.innerHTML = "";
+
+      watchlist.forEach((stock) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${escapeHtml(stock.ticker)}</td>
+          <td>${escapeHtml(stock.company)}</td>
+          <td>${stock.target ? money.format(stock.target) : "-"}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function renderRecruiting() {
+      const tbody = document.querySelector("#recruitingTable tbody");
+      tbody.innerHTML = "";
+
+      recruitingRecords.forEach((record) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${escapeHtml(record.company)}</td>
+          <td>${escapeHtml(record.role)}</td>
+          <td>${escapeHtml(record.dateApplied || "-")}</td>
+          <td><span class="status-chip">${escapeHtml(record.status)}</span></td>
+          <td>${escapeHtml(record.referral)}</td>
+          <td>${escapeHtml(record.hireVue)}</td>
+          <td>${escapeHtml(record.interview)}</td>
+          <td>${escapeHtml(record.offer)}</td>
+          <td>${escapeHtml(record.notes || "-")}</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      if (!recruitingRecords.length) {
+        tbody.innerHTML = "<tr><td colspan=\"9\">No recruiting records yet.</td></tr>";
+      }
+
+      renderRecruitingMetrics();
+    }
+
+    function renderNetworking() {
+      const tbody = document.querySelector("#networkingTable tbody");
+      tbody.innerHTML = "";
+
+      networkingContacts
+        .slice()
+        .sort((a, b) => (a.followUpDate || "9999-12-31").localeCompare(b.followUpDate || "9999-12-31"))
+        .forEach((contact) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${escapeHtml(contact.name)}</td>
+            <td>${escapeHtml(contact.company)}</td>
+            <td>${escapeHtml(contact.role || "-")}</td>
+            <td>${escapeHtml(contact.lastContacted || "-")}</td>
+            <td>${escapeHtml(contact.followUpDate || "-")}</td>
+            <td>${escapeHtml(contact.notes || "-")}</td>
+          `;
+          tbody.appendChild(row);
+        });
+
+      if (!networkingContacts.length) {
+        tbody.innerHTML = "<tr><td colspan=\"6\">No networking contacts yet.</td></tr>";
       }
     }
 
-    function updateChart() {
-      const labels = expenses.map(e => e.name);
-      const data = expenses.map(e => e.amount);
-      if (chart) chart.destroy();
-      const ctx = document.getElementById("expenseChart").getContext("2d");
-      chart = new Chart(ctx, {
-        type: 'pie',
+    function renderRecruitingMetrics() {
+      const total = recruitingRecords.length;
+      const responses = recruitingRecords.filter((record) => record.hireVue === "Yes" || record.interview === "Yes" || isOffer(record) || ["HireVue", "Interviewing"].includes(record.status)).length;
+      const interviews = recruitingRecords.filter((record) => record.interview === "Yes" || ["Interviewing", "Offer", "Accepted"].includes(record.status)).length;
+      const offers = recruitingRecords.filter(isOffer).length;
+      const referred = recruitingRecords.filter((record) => record.referral === "Yes");
+      const nonReferred = recruitingRecords.filter((record) => record.referral !== "Yes");
+      const referralSuccesses = referred.filter(isOffer).length;
+      const nonReferralSuccesses = nonReferred.filter(isOffer).length;
+
+      document.getElementById("recruitingTotalApplications").textContent = total;
+      document.getElementById("recruitingResponseRate").textContent = formatPercent(responses, total);
+      document.getElementById("recruitingInterviewRate").textContent = formatPercent(interviews, total);
+      document.getElementById("recruitingOfferRate").textContent = formatPercent(offers, total);
+      document.getElementById("recruitingReferralSuccessRate").textContent = formatPercent(referralSuccesses, referred.length);
+      document.getElementById("recruitingNonReferralSuccessRate").textContent = formatPercent(nonReferralSuccesses, nonReferred.length);
+      document.getElementById("recruitingInsight").textContent = getRecruitingInsight(total, responses, interviews, offers, referred.length, referralSuccesses, nonReferred.length, nonReferralSuccesses);
+    }
+
+    function renderDashboard() {
+      const income = Number(document.getElementById("income").value) || 0;
+      const totalSpending = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+      const savings = income - totalSpending;
+      const savingsRate = income > 0 ? (savings / income) * 100 : 0;
+      const topCategory = getTopCategory();
+      const activeApplications = careers.filter((career) => !["Rejected", "Accepted"].includes(career.status)).length;
+      const offers = careers.filter((career) => ["Offer", "Accepted"].includes(career.status)).length;
+      const referralCount = careers.filter((career) => career.referral === "Yes").length;
+      const referralRate = careers.length ? (referralCount / careers.length) * 100 : 0;
+      const budgetHealth = getBudgetHealth(income, savingsRate, savings);
+
+      document.getElementById("dashboardIncome").textContent = money.format(income);
+      document.getElementById("dashboardSpending").textContent = money.format(totalSpending);
+      document.getElementById("dashboardSavingsRate").textContent = `${Math.round(savingsRate)}%`;
+      document.getElementById("dashboardTopCategory").textContent = topCategory;
+      document.getElementById("dashboardActiveApplications").textContent = activeApplications;
+      document.getElementById("dashboardOffers").textContent = offers;
+      document.getElementById("dashboardReferralRate").textContent = `${Math.round(referralRate)}%`;
+      document.getElementById("dashboardWatchlistCount").textContent = watchlist.length;
+      document.getElementById("dashboardRemainingSavings").textContent = money.format(savings);
+      document.getElementById("dashboardExpenseCount").textContent = expenses.length;
+      document.getElementById("dashboardBudgetHealth").textContent = budgetHealth;
+      document.getElementById("dashboardSavingsProgress").style.width = `${Math.max(0, Math.min(100, savingsRate))}%`;
+      document.getElementById("dashboardNextInterview").textContent = getNextInterview();
+      document.getElementById("dashboardRecentApplication").textContent = getRecentApplication();
+      document.getElementById("dashboardSummary").textContent = getDashboardSummary(income, totalSpending, careers.length, watchlist.length);
+      document.getElementById("headerSavings").textContent = `${money.format(Math.max(savings, 0))} saved`;
+      renderDashboardCareerTable();
+      renderDashboardCategoryList();
+
+      const feedback = document.getElementById("budgetFeedback");
+      if (savings > 0) {
+        feedback.textContent = `You are currently saving ${money.format(savings)}.`;
+        feedback.className = "feedback positive";
+      } else if (savings === 0) {
+        feedback.textContent = "You are currently breaking even.";
+        feedback.className = "feedback neutral";
+      } else {
+        feedback.textContent = `You are over budget by ${money.format(Math.abs(savings))}.`;
+        feedback.className = "feedback negative";
+      }
+    }
+
+    function getTopCategory() {
+      if (!expenses.length) return "None yet";
+
+      const totals = expenses.reduce((grouped, expense) => {
+        grouped[expense.category] = (grouped[expense.category] || 0) + expense.amount;
+        return grouped;
+      }, {});
+
+      return Object.entries(totals).sort((a, b) => b[1] - a[1])[0][0];
+    }
+
+    function getBudgetHealth(income, savingsRate, savings) {
+      if (!income && !expenses.length) return "Add income and expenses to see your monthly health.";
+      if (savings < 0) return `Over budget by ${money.format(Math.abs(savings))}.`;
+      if (savingsRate >= 20) return "Strong savings pace for the month.";
+      if (savingsRate >= 10) return "Healthy, with room to keep building savings.";
+      return "Positive, but a few categories may need attention.";
+    }
+
+    function getDashboardSummary(income, totalSpending, applicationCount, stockCount) {
+      const pieces = [];
+      pieces.push(income ? `${money.format(income)} income tracked` : "No income added yet");
+      pieces.push(`${money.format(totalSpending)} spending logged`);
+      pieces.push(`${applicationCount} career ${applicationCount === 1 ? "application" : "applications"}`);
+      pieces.push(`${stockCount} watchlist ${stockCount === 1 ? "stock" : "stocks"}`);
+      return pieces.join(" | ");
+    }
+
+    function getNextInterview() {
+      const upcoming = careers
+        .filter((career) => career.interviewDate)
+        .filter((career) => new Date(`${career.interviewDate}T00:00:00`) >= new Date(today.toDateString()))
+        .sort((a, b) => a.interviewDate.localeCompare(b.interviewDate));
+
+      if (!upcoming.length) return "None scheduled";
+
+      const next = upcoming[0];
+      return `${next.company} on ${next.interviewDate}`;
+    }
+
+    function getRecentApplication() {
+      const dated = careers
+        .filter((career) => career.dateApplied)
+        .sort((a, b) => b.dateApplied.localeCompare(a.dateApplied));
+
+      if (dated.length) return `${dated[0].company} - ${dated[0].role}`;
+      if (careers.length) return `${careers[careers.length - 1].company} - ${careers[careers.length - 1].role}`;
+      return "None yet";
+    }
+
+    function renderDashboardCareerTable() {
+      const tbody = document.querySelector("#dashboardCareerTable tbody");
+      tbody.innerHTML = "";
+
+      careers.slice(-3).reverse().forEach((career) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${escapeHtml(career.company)}</td>
+          <td>${escapeHtml(career.role)}</td>
+          <td><span class="status-chip">${escapeHtml(career.status)}</span></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      if (!careers.length) {
+        tbody.innerHTML = "<tr><td colspan=\"3\">No applications yet.</td></tr>";
+      }
+    }
+
+    function renderDashboardCategoryList() {
+      const list = document.getElementById("dashboardCategoryList");
+      list.innerHTML = "";
+
+      const totals = expenses.reduce((grouped, expense) => {
+        grouped[expense.category] = (grouped[expense.category] || 0) + expense.amount;
+        return grouped;
+      }, {});
+      const ranked = Object.entries(totals).sort((a, b) => b[1] - a[1]).slice(0, 4);
+
+      if (!ranked.length) {
+        list.innerHTML = "<li>No expense categories yet.</li>";
+        return;
+      }
+
+      ranked.forEach(([category, amount]) => {
+        const item = document.createElement("li");
+        item.innerHTML = `<span>${escapeHtml(category)}</span><strong>${money.format(amount)}</strong>`;
+        list.appendChild(item);
+      });
+    }
+
+    function renderCalculators() {
+      const score = Number(document.getElementById("riskTimeline").value)
+        + Number(document.getElementById("riskReaction").value)
+        + Number(document.getElementById("riskExperience").value);
+      const riskProfile = score <= 4
+        ? "Conservative"
+        : score <= 7
+          ? "Moderate"
+          : "Aggressive";
+      document.getElementById("riskResult").textContent = riskProfile;
+
+      const principal = Number(document.getElementById("compoundPrincipal").value) || 0;
+      const contribution = Number(document.getElementById("compoundContribution").value) || 0;
+      const monthlyRate = ((Number(document.getElementById("compoundRate").value) || 0) / 100) / 12;
+      const months = (Number(document.getElementById("compoundYears").value) || 0) * 12;
+      let compoundValue = principal;
+
+      for (let month = 0; month < months; month += 1) {
+        compoundValue = (compoundValue + contribution) * (1 + monthlyRate);
+      }
+      document.getElementById("compoundResult").textContent = money.format(compoundValue);
+
+      const cashFlow = Number(document.getElementById("dcfCashFlow").value) || 0;
+      const growth = (Number(document.getElementById("dcfGrowth").value) || 0) / 100;
+      const discount = (Number(document.getElementById("dcfDiscount").value) || 0) / 100;
+      const multiple = Number(document.getElementById("dcfMultiple").value) || 0;
+      let dcfValue = 0;
+      let projectedCashFlow = cashFlow;
+
+      for (let year = 1; year <= 5; year += 1) {
+        projectedCashFlow *= (1 + growth);
+        dcfValue += projectedCashFlow / ((1 + discount) ** year);
+      }
+
+      const terminalValue = (projectedCashFlow * multiple) / ((1 + discount) ** 5);
+      const dcfEstimate = dcfValue + terminalValue;
+      document.getElementById("dcfResult").textContent = money.format(dcfEstimate);
+      document.getElementById("dashboardRiskProfile").textContent = riskProfile;
+      document.getElementById("dashboardCompoundProjection").textContent = money.format(compoundValue);
+      document.getElementById("dashboardDcfEstimate").textContent = money.format(dcfEstimate);
+    }
+
+    function renderCharts() {
+      renderExpenseChart();
+      renderMonthlyTrendChart();
+      renderRecruitingStatusChart();
+      renderRecruitingReferralChart();
+      renderRecruitingMonthlyChart();
+    }
+
+    function renderExpenseChart() {
+      const categoryTotals = expenses.reduce((grouped, expense) => {
+        grouped[expense.category] = (grouped[expense.category] || 0) + expense.amount;
+        return grouped;
+      }, {});
+      const labels = Object.keys(categoryTotals);
+      const data = Object.values(categoryTotals);
+      const canvas = document.getElementById("expenseChart");
+
+      if (expenseChart) expenseChart.destroy();
+      expenseChart = new Chart(canvas, {
+        type: "doughnut",
         data: {
-          labels: labels,
+          labels,
           datasets: [{
-            data: data,
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
+            data,
+            backgroundColor: ["#2563eb", "#14b8a6", "#f97316", "#8b5cf6", "#eab308", "#ef4444", "#64748b"]
           }]
         },
         options: {
-          responsive: true,
-          plugins: { legend: { position: 'bottom' } }
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } }
         }
       });
     }
 
-    function clearAll() {
-      expenses = [];
-      document.getElementById("income").value = '';
-      document.getElementById("expenseName").value = '';
-      document.getElementById("expenseAmount").value = '';
-      renderExpenses(); updateSummary();
-      if (chart) { chart.destroy(); chart = null; }
-      localStorage.removeItem("expenses");
-      localStorage.removeItem("income");
-    }
+    function renderMonthlyTrendChart() {
+      const monthTotals = expenses.reduce((grouped, expense) => {
+        grouped[expense.month] = (grouped[expense.month] || 0) + expense.amount;
+        return grouped;
+      }, {});
+      const labels = Object.keys(monthTotals).sort();
+      const data = labels.map((month) => monthTotals[month]);
+      const canvas = document.getElementById("monthlyTrendChart");
 
-    document.getElementById("income").addEventListener("input", () => {
-      localStorage.setItem("income", document.getElementById("income").value);
-      updateSummary();
-    });
-
-    // ------------- Internship Tracker -------------
-    let internships = [];
-
-    function addInternship() {
-      const company = document.getElementById("company").value;
-      const position = document.getElementById("position").value;
-      const status = document.getElementById("status").value;
-      if (!company || !position) return alert("Please fill in all internship fields.");
-      internships.push({ company, position, status });
-      localStorage.setItem("internships", JSON.stringify(internships));
-      renderInternships();
-    }
-
-    function renderInternships() {
-      const tbody = document.getElementById("internshipTable").querySelector("tbody");
-      tbody.innerHTML = "";
-      internships.forEach(entry => {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${entry.company}</td><td>${entry.position}</td><td>${entry.status}</td>`;
-        tbody.appendChild(row);
+      if (monthlyTrendChart) monthlyTrendChart.destroy();
+      monthlyTrendChart = new Chart(canvas, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Spending",
+            data,
+            backgroundColor: "#14b8a6"
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true } },
+          plugins: { legend: { display: false } }
+        }
       });
     }
+
+    function renderRecruitingStatusChart() {
+      const statuses = ["Applied", "HireVue", "Interviewing", "Offer", "Rejected", "Accepted"];
+      const totals = statuses.map((status) => recruitingRecords.filter((record) => record.status === status).length);
+      const canvas = document.getElementById("recruitingStatusChart");
+
+      if (recruitingStatusChart) recruitingStatusChart.destroy();
+      recruitingStatusChart = new Chart(canvas, {
+        type: "doughnut",
+        data: {
+          labels: statuses,
+          datasets: [{
+            data: totals,
+            backgroundColor: ["#2563eb", "#8b5cf6", "#14b8a6", "#22c55e", "#ef4444", "#0f766e"]
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } }
+        }
+      });
+    }
+
+    function renderRecruitingReferralChart() {
+      const referred = recruitingRecords.filter((record) => record.referral === "Yes");
+      const nonReferred = recruitingRecords.filter((record) => record.referral !== "Yes");
+      const canvas = document.getElementById("recruitingReferralChart");
+
+      if (recruitingReferralChart) recruitingReferralChart.destroy();
+      recruitingReferralChart = new Chart(canvas, {
+        type: "bar",
+        data: {
+          labels: ["Referral", "No referral"],
+          datasets: [
+            {
+              label: "Offer",
+              data: [referred.filter(isOffer).length, nonReferred.filter(isOffer).length],
+              backgroundColor: "#14b8a6"
+            },
+            {
+              label: "No offer",
+              data: [referred.filter((record) => !isOffer(record)).length, nonReferred.filter((record) => !isOffer(record)).length],
+              backgroundColor: "#94a3b8"
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: {
+            x: { stacked: true },
+            y: { beginAtZero: true, stacked: true }
+          },
+          plugins: { legend: { position: "bottom" } }
+        }
+      });
+    }
+
+    function renderRecruitingMonthlyChart() {
+      const monthTotals = recruitingRecords.reduce((grouped, record) => {
+        const month = record.dateApplied ? record.dateApplied.slice(0, 7) : "Unscheduled";
+        grouped[month] = (grouped[month] || 0) + 1;
+        return grouped;
+      }, {});
+      const labels = Object.keys(monthTotals).sort();
+      const canvas = document.getElementById("recruitingMonthlyChart");
+
+      if (recruitingMonthlyChart) recruitingMonthlyChart.destroy();
+      recruitingMonthlyChart = new Chart(canvas, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            label: "Applications",
+            data: labels.map((month) => monthTotals[month]),
+            borderColor: "#2563eb",
+            backgroundColor: "rgba(37, 99, 235, 0.16)",
+            fill: true,
+            tension: 0.35
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function isOffer(record) {
+      return record.offer === "Yes" || ["Offer", "Accepted"].includes(record.status);
+    }
+
+    function formatPercent(numerator, denominator) {
+      if (!denominator) return "0%";
+      return `${Math.round((numerator / denominator) * 100)}%`;
+    }
+
+    function getRecruitingInsight(total, responses, interviews, offers, referredTotal, referralSuccesses, nonReferredTotal, nonReferralSuccesses) {
+      if (!total) return "Add recruiting data to generate your first insight.";
+      if (offers) return `${offers} offer ${offers === 1 ? "landed" : "landed"} from ${total} applications. Keep logging referral and interview outcomes.`;
+      if (interviews) return `${formatPercent(interviews, total)} of applications are reaching interviews.`;
+      if (responses) return `${formatPercent(responses, total)} response rate so far. Track HireVues and interviews to sharpen the funnel.`;
+
+      const referralRate = referredTotal ? referralSuccesses / referredTotal : 0;
+      const nonReferralRate = nonReferredTotal ? nonReferralSuccesses / nonReferredTotal : 0;
+      if (referralRate > nonReferralRate) return "Referrals are outperforming cold applications so far.";
+      return "The funnel is ready. Add outcomes as responses arrive.";
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    renderAll();
   </script>
 </body>
 </html>
-
-

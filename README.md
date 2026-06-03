@@ -1,15 +1,21 @@
 # College Finance HQ
 
-College Finance HQ is a web-based financial planning and career tracking platform built for college students. It helps students manage their budget, track expenses, monitor savings, and organize internship applications in one place.
+College Finance HQ is a web-based finance, career, and recruiting analytics platform built for college students. It combines budgeting, investing tools, internship tracking, and a Recruiting Intelligence Dashboard so students can present a polished finance + analytics project while managing their real application pipeline.
 
 ## Features
-- Monthly budget builder
-- Expense tracker
-- Savings summary
-- Internship application tracker
-- Status tracking for applications
-- Interactive expense chart
-- Local browser data storage
+- Career and internship tracker with company, role, application date, status, referral, interview date, and notes
+- Finance dashboard with total income, total spending, savings rate, top expense category, and monthly trend
+- Budget builder with categorized monthly expenses
+- Recruiting Intelligence Dashboard with application funnel metrics, referral analysis, and monthly application trends
+- Recruiting Analytics records for company, role, date applied, status, referral, HireVue, interview, offer, and notes
+- Auto-calculated recruiting metrics for total applications, response rate, interview rate, offer rate, referral success rate, and non-referral success rate
+- Networking CRM for contacts, companies, roles, last contacted dates, follow-up dates, and notes
+- Investing hub with stock watchlist
+- Risk tolerance quiz
+- Compound interest calculator
+- Basic DCF calculator
+- Interactive dashboard charts
+- Local browser data storage with no external APIs or API keys
 
 ## Built With
 - HTML
@@ -19,9 +25,7 @@ College Finance HQ is a web-based financial planning and career tracking platfor
 - GitHub Pages
 
 ## Future Features
-- Stock watchlist
-- Networking tracker
 - Student loan calculator
 - GPA calculator
 - Financial goal tracker
-- Power BI-style dashboard
+- Exportable recruiting reports
