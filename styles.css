@@ -61,6 +61,14 @@ button {
   text-transform: uppercase;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 .header-stats {
   display: flex;
   flex-wrap: wrap;
@@ -80,6 +88,21 @@ button {
   color: #ffffff;
   font-size: 0.88rem;
   font-weight: 700;
+}
+
+.demo-button {
+  min-height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  padding: 9px 13px;
+  background: #ffffff;
+  color: var(--ink);
+  font-weight: 800;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+}
+
+.demo-button:hover {
+  background: #ecfeff;
 }
 
 .app-shell {
@@ -480,6 +503,7 @@ tr:last-child td {
     flex-direction: column;
   }
 
+  .header-actions,
   .header-stats {
     justify-content: flex-start;
   }

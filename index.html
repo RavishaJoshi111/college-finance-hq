@@ -13,9 +13,12 @@
       <p class="eyebrow">Student planning workspace</p>
       <h1>College Finance HQ</h1>
     </div>
-    <div class="header-stats">
-      <span id="headerSavings">$0 saved</span>
-      <span id="headerApplications">0 applications</span>
+    <div class="header-actions">
+      <div class="header-stats">
+        <span id="headerSavings">$0 saved</span>
+        <span id="headerApplications">0 applications</span>
+      </div>
+      <button class="demo-button" type="button" id="loadDemoDataButton">Load Demo Data</button>
     </div>
   </header>
 
@@ -626,6 +629,137 @@
 
     const today = new Date();
     const thisMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+    const demoWatchlist = [
+      { demoId: "demo-msft", ticker: "MSFT", company: "Microsoft", target: 465 },
+      { demoId: "demo-nvda", ticker: "NVDA", company: "NVIDIA", target: 145 },
+      { demoId: "demo-jpm", ticker: "JPM", company: "JPMorgan Chase", target: 230 },
+      { demoId: "demo-blk", ticker: "BLK", company: "BlackRock", target: 920 },
+      { demoId: "demo-spy", ticker: "SPY", company: "S&P 500 ETF", target: 560 }
+    ];
+    const demoRecruitingRecords = [
+      {
+        demoId: "demo-evercore-ib",
+        company: "Evercore",
+        role: "Investment Banking Summer Analyst",
+        dateApplied: "2026-01-16",
+        status: "Interviewing",
+        referral: "Yes",
+        hireVue: "Yes",
+        interview: "Yes",
+        offer: "No",
+        notes: "Alumni referral; first-round technical screen scheduled."
+      },
+      {
+        demoId: "demo-jpm-am",
+        company: "JPMorgan Chase",
+        role: "Asset Management Summer Analyst",
+        dateApplied: "2026-02-03",
+        status: "Offer",
+        referral: "Yes",
+        hireVue: "Yes",
+        interview: "Yes",
+        offer: "Yes",
+        notes: "Superday completed; offer received after networking follow-up."
+      },
+      {
+        demoId: "demo-blackrock-pm",
+        company: "BlackRock",
+        role: "Portfolio Analytics Intern",
+        dateApplied: "2026-02-22",
+        status: "HireVue",
+        referral: "No",
+        hireVue: "Yes",
+        interview: "No",
+        offer: "No",
+        notes: "HireVue submitted; tracking response window."
+      },
+      {
+        demoId: "demo-ms-credit",
+        company: "Morgan Stanley",
+        role: "Credit Risk Summer Analyst",
+        dateApplied: "2026-03-04",
+        status: "Rejected",
+        referral: "No",
+        hireVue: "No",
+        interview: "No",
+        offer: "No",
+        notes: "Rejected after resume screen; update resume keywords."
+      },
+      {
+        demoId: "demo-gs-cwm",
+        company: "Goldman Sachs",
+        role: "Consumer & Wealth Management Analyst",
+        dateApplied: "2026-03-18",
+        status: "Applied",
+        referral: "Yes",
+        hireVue: "No",
+        interview: "No",
+        offer: "No",
+        notes: "Referred by campus alum; follow up in one week."
+      },
+      {
+        demoId: "demo-bofa-global",
+        company: "Bank of America",
+        role: "Global Markets Summer Analyst",
+        dateApplied: "2026-04-02",
+        status: "Interviewing",
+        referral: "No",
+        hireVue: "Yes",
+        interview: "Yes",
+        offer: "No",
+        notes: "Behavioral round complete; waiting on technical round."
+      },
+      {
+        demoId: "demo-citi-treasury",
+        company: "Citi",
+        role: "Treasury and Trade Solutions Intern",
+        dateApplied: "2026-04-15",
+        status: "Accepted",
+        referral: "Yes",
+        hireVue: "Yes",
+        interview: "Yes",
+        offer: "Yes",
+        notes: "Accepted offer; add start date and onboarding tasks."
+      }
+    ];
+    const demoNetworkingContacts = [
+      {
+        demoId: "demo-maya-patel",
+        name: "Maya Patel",
+        company: "Evercore",
+        role: "Investment Banking Analyst",
+        lastContacted: "2026-04-26",
+        followUpDate: "2026-06-07",
+        notes: "Send thank-you note and ask for advice on technical prep."
+      },
+      {
+        demoId: "demo-daniel-kim",
+        name: "Daniel Kim",
+        company: "JPMorgan Chase",
+        role: "Asset Management Associate",
+        lastContacted: "2026-05-02",
+        followUpDate: "2026-06-10",
+        notes: "Share updated resume and ask about team placement."
+      },
+      {
+        demoId: "demo-sofia-rivera",
+        name: "Sofia Rivera",
+        company: "BlackRock",
+        role: "Portfolio Analytics VP",
+        lastContacted: "2026-05-12",
+        followUpDate: "2026-06-13",
+        notes: "Follow up with two questions about Aladdin and analytics."
+      },
+      {
+        demoId: "demo-ethan-brooks",
+        name: "Ethan Brooks",
+        company: "Goldman Sachs",
+        role: "Wealth Management Analyst",
+        lastContacted: "2026-05-20",
+        followUpDate: "2026-06-05",
+        notes: "Ask for a warm intro to campus recruiting contact."
+      }
+    ];
 
     document.getElementById("expenseMonth").value = thisMonth;
     document.getElementById("income").value = localStorage.getItem(storageKeys.income) || "";
@@ -638,6 +772,8 @@
       localStorage.setItem(storageKeys.income, document.getElementById("income").value);
       renderAll();
     });
+
+    document.getElementById("loadDemoDataButton").addEventListener("click", loadDemoData);
 
     document.getElementById("budgetForm").addEventListener("submit", (event) => {
       event.preventDefault();
@@ -795,6 +931,24 @@
 
     function save(key, value) {
       localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function loadDemoData() {
+      watchlist = mergeDemoItems(watchlist, demoWatchlist);
+      recruitingRecords = mergeDemoItems(recruitingRecords, demoRecruitingRecords);
+      networkingContacts = mergeDemoItems(networkingContacts, demoNetworkingContacts);
+      save(storageKeys.watchlist, watchlist);
+      save(storageKeys.recruiting, recruitingRecords);
+      save(storageKeys.networking, networkingContacts);
+      renderAll();
+      const recruitingButton = document.querySelector("[data-tab='recruitingTab']");
+      showTab("recruitingTab", recruitingButton);
+    }
+
+    function mergeDemoItems(existingItems, demoItems) {
+      const existingDemoIds = new Set(existingItems.map((item) => item.demoId).filter(Boolean));
+      const newItems = demoItems.filter((item) => !existingDemoIds.has(item.demoId));
+      return [...existingItems, ...newItems];
     }
 
     function renderAll() {

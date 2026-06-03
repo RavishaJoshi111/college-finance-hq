@@ -10,6 +10,7 @@ College Finance HQ is a web-based finance, career, and recruiting analytics plat
 - Recruiting Analytics records for company, role, date applied, status, referral, HireVue, interview, offer, and notes
 - Auto-calculated recruiting metrics for total applications, response rate, interview rate, offer rate, referral success rate, and non-referral success rate
 - Networking CRM for contacts, companies, roles, last contacted dates, follow-up dates, and notes
+- Portfolio presentation mode with a Load Demo Data button for sample watchlist, recruiting, and networking analytics
 - Investing hub with stock watchlist
 - Risk tolerance quiz
 - Compound interest calculator
