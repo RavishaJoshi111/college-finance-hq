@@ -17,6 +17,7 @@
       <div class="header-stats">
         <span id="headerSavings">$0 saved</span>
         <span id="headerApplications">0 applications</span>
+        <span id="headerRecruitingApplications">0 recruiting records</span>
       </div>
       <button class="demo-button" type="button" id="loadDemoDataButton">Load Demo Data</button>
     </div>
@@ -39,6 +40,7 @@
         </div>
         <p class="dashboard-summary" id="dashboardSummary">Add your income, expenses, applications, and watchlist to build your HQ.</p>
       </div>
+      <p class="success-message" id="demoSuccessMessage" role="status" aria-live="polite"></p>
 
       <div class="metric-grid">
         <article class="metric-card">
@@ -941,8 +943,9 @@
       save(storageKeys.recruiting, recruitingRecords);
       save(storageKeys.networking, networkingContacts);
       renderAll();
-      const recruitingButton = document.querySelector("[data-tab='recruitingTab']");
-      showTab("recruitingTab", recruitingButton);
+      document.getElementById("demoSuccessMessage").textContent = "Demo data loaded successfully.";
+      const dashboardButton = document.querySelector("[data-tab='dashboardTab']");
+      showTab("dashboardTab", dashboardButton);
     }
 
     function mergeDemoItems(existingItems, demoItems) {
@@ -1083,6 +1086,7 @@
       document.getElementById("recruitingReferralSuccessRate").textContent = formatPercent(referralSuccesses, referred.length);
       document.getElementById("recruitingNonReferralSuccessRate").textContent = formatPercent(nonReferralSuccesses, nonReferred.length);
       document.getElementById("recruitingInsight").textContent = getRecruitingInsight(total, responses, interviews, offers, referred.length, referralSuccesses, nonReferred.length, nonReferralSuccesses);
+      document.getElementById("headerRecruitingApplications").textContent = `${total} recruiting ${total === 1 ? "record" : "records"}`;
     }
 
     function renderDashboard() {

@@ -483,6 +483,13 @@ tr:last-child td {
   color: var(--danger);
 }
 
+.success-message {
+  min-height: 24px;
+  margin: -6px 0 14px;
+  color: #047857;
+  font-weight: 800;
+}
+
 .result-pill {
   width: fit-content;
   margin: 14px 0 0;
