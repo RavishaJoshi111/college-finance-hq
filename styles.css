@@ -89,27 +89,34 @@ button {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 20px;
-  padding: 6px;
+  grid-template-columns: repeat(6, minmax(112px, 1fr));
+  gap: 6px;
+  overflow-x: auto;
+  margin-bottom: 22px;
+  padding: 5px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
+  box-shadow: 0 12px 30px rgba(23, 32, 51, 0.06);
+  scrollbar-width: thin;
 }
 
 .tabs button {
-  min-height: 44px;
+  min-height: 42px;
+  min-width: 0;
   border: 0;
   border-radius: 6px;
   background: transparent;
   color: var(--muted);
+  white-space: nowrap;
   font-weight: 700;
+  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
 }
 
 .tabs button.active {
   background: var(--primary);
   color: #ffffff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
 }
 
 .tab-content {
@@ -517,7 +524,6 @@ tr:last-child td {
     justify-content: flex-start;
   }
 
-  .tabs,
   .metric-grid,
   .dashboard-grid,
   .recruiting-metrics,
@@ -548,5 +554,11 @@ tr:last-child td {
 
   .chart-wrap {
     height: 260px;
+  }
+}
+
+@media (max-width: 720px) {
+  .tabs {
+    grid-template-columns: repeat(6, minmax(104px, 1fr));
   }
 }
