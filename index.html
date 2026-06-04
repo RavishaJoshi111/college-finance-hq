@@ -1197,7 +1197,7 @@
         marketData = source.quotes;
         marketDataSource = source.name;
       } catch (error) {
-        console.warn("Live market data unavailable; using sample fallback data.", error);
+        console.info("Live market data unavailable; using sample fallback data.", error);
         marketData = sampleMarketData;
         marketDataSource = "Sample fallback data";
       }
