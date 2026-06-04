@@ -13,12 +13,38 @@
       <p class="eyebrow">Student planning workspace</p>
       <h1>College Finance HQ</h1>
     </div>
-    <div class="header-stats">
-      <span id="headerSavings">$0 saved</span>
-      <span id="headerApplications">0 applications</span>
-      <span id="headerRecruitingApplications">0 recruiting records</span>
+    <div class="header-right">
+      <div class="header-stats">
+        <span id="headerSavings">$0 saved</span>
+        <span id="headerApplications">0 applications</span>
+        <span id="headerRecruitingApplications">0 recruiting records</span>
+      </div>
+      <button class="theme-toggle" type="button" id="themeToggle" aria-pressed="false">Dark mode</button>
     </div>
   </header>
+
+  <section class="ticker-tape" aria-label="Sample market ticker">
+    <div class="ticker-track">
+      <span>SPY <strong class="positive">+0.42%</strong></span>
+      <span>QQQ <strong class="positive">+0.68%</strong></span>
+      <span>JPM <strong class="negative">-0.18%</strong></span>
+      <span>GS <strong class="positive">+0.25%</strong></span>
+      <span>MS <strong class="negative">-0.31%</strong></span>
+      <span>AAPL <strong class="positive">+0.74%</strong></span>
+      <span>NVDA <strong class="positive">+1.28%</strong></span>
+      <span>V <strong class="negative">-0.09%</strong></span>
+      <span>BRK.B <strong class="positive">+0.16%</strong></span>
+      <span>SPY <strong class="positive">+0.42%</strong></span>
+      <span>QQQ <strong class="positive">+0.68%</strong></span>
+      <span>JPM <strong class="negative">-0.18%</strong></span>
+      <span>GS <strong class="positive">+0.25%</strong></span>
+      <span>MS <strong class="negative">-0.31%</strong></span>
+      <span>AAPL <strong class="positive">+0.74%</strong></span>
+      <span>NVDA <strong class="positive">+1.28%</strong></span>
+      <span>V <strong class="negative">-0.09%</strong></span>
+      <span>BRK.B <strong class="positive">+0.16%</strong></span>
+    </div>
+  </section>
 
   <main class="app-shell">
     <nav class="tabs" aria-label="Workspace sections">
@@ -502,6 +528,21 @@
       </div>
 
       <div class="panel-grid">
+        <section class="panel wide-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Sample market data mode</p>
+              <h3>Market snapshot</h3>
+            </div>
+            <span class="result-pill">Demo quotes</span>
+          </div>
+          <p class="panel-note">Uses safe sample data by default so the app works without API keys.</p>
+          <div class="market-grid" id="marketCards"></div>
+          <div class="chart-wrap compact-chart">
+            <canvas id="marketPerformanceChart"></canvas>
+          </div>
+        </section>
+
         <section class="panel">
           <h3>Stock watchlist</h3>
           <form id="watchlistForm" class="inline-form">
@@ -766,7 +807,8 @@
       careers: "cfhq_careers",
       watchlist: "cfhq_watchlist",
       recruiting: "cfhq_recruiting",
-      networking: "cfhq_networking"
+      networking: "cfhq_networking",
+      theme: "cfhq_theme"
     };
 
     let expenses = JSON.parse(localStorage.getItem(storageKeys.expenses)) || [];
@@ -783,9 +825,21 @@
     let demoReferralChart;
     let demoMonthlyChart;
     let demoBudgetChart;
+    let marketPerformanceChart;
 
     const today = new Date();
     const thisMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+    const sampleMarketData = [
+      { symbol: "SPY", name: "S&P 500 ETF", price: 534.88, change: 2.26, changePercent: 0.42 },
+      { symbol: "QQQ", name: "Nasdaq 100 ETF", price: 462.14, change: 3.12, changePercent: 0.68 },
+      { symbol: "JPM", name: "JPMorgan Chase", price: 198.45, change: -0.36, changePercent: -0.18 },
+      { symbol: "GS", name: "Goldman Sachs", price: 461.72, change: 1.16, changePercent: 0.25 },
+      { symbol: "MS", name: "Morgan Stanley", price: 97.33, change: -0.30, changePercent: -0.31 },
+      { symbol: "AAPL", name: "Apple", price: 214.29, change: 1.57, changePercent: 0.74 },
+      { symbol: "NVDA", name: "NVIDIA", price: 128.91, change: 1.63, changePercent: 1.28 },
+      { symbol: "V", name: "Visa", price: 276.40, change: -0.25, changePercent: -0.09 },
+      { symbol: "BRK.B", name: "Berkshire Hathaway", price: 413.66, change: 0.66, changePercent: 0.16 }
+    ];
     const demoIncome = 3200;
     const demoExpenses = [
       { name: "Apartment rent", amount: 1350, category: "Housing", month: "2026-01" },
@@ -929,6 +983,7 @@
     ];
 
     removeStoredDemoItems();
+    applyStoredTheme();
     document.getElementById("expenseMonth").value = thisMonth;
     document.getElementById("income").value = localStorage.getItem(storageKeys.income) || "";
 
@@ -940,6 +995,8 @@
       localStorage.setItem(storageKeys.income, document.getElementById("income").value);
       renderAll();
     });
+
+    document.getElementById("themeToggle").addEventListener("click", toggleTheme);
 
     document.getElementById("budgetForm").addEventListener("submit", (event) => {
       event.preventDefault();
@@ -1099,6 +1156,38 @@
       localStorage.setItem(key, JSON.stringify(value));
     }
 
+    function applyStoredTheme() {
+      const savedTheme = localStorage.getItem(storageKeys.theme) || "light";
+      document.body.dataset.theme = savedTheme;
+      updateThemeToggle(savedTheme);
+    }
+
+    function toggleTheme() {
+      const nextTheme = document.body.dataset.theme === "dark" ? "light" : "dark";
+      document.body.dataset.theme = nextTheme;
+      localStorage.setItem(storageKeys.theme, nextTheme);
+      updateThemeToggle(nextTheme);
+      renderCharts();
+    }
+
+    function updateThemeToggle(theme) {
+      const toggle = document.getElementById("themeToggle");
+      const isDark = theme === "dark";
+      toggle.textContent = isDark ? "Light mode" : "Dark mode";
+      toggle.setAttribute("aria-pressed", String(isDark));
+    }
+
+    // Future integration point: replace this sample-data return with a secure backend or serverless
+    // market-data request. Do not place private API keys in this client-side file.
+    function getMarketData() {
+      try {
+        return sampleMarketData;
+      } catch (error) {
+        console.warn("Market data unavailable; falling back to sample quotes.", error);
+        return sampleMarketData;
+      }
+    }
+
     function removeStoredDemoItems() {
       const cleanedWatchlist = watchlist.filter((item) => !item.demoId);
       const cleanedRecruitingRecords = recruitingRecords.filter((item) => !item.demoId);
@@ -1124,6 +1213,7 @@
       renderExpenses();
       renderCareers();
       renderWatchlist();
+      renderMarketData();
       renderRecruiting();
       renderNetworking();
       renderDashboard();
@@ -1181,6 +1271,28 @@
           <td>${stock.target ? money.format(stock.target) : "-"}</td>
         `;
         tbody.appendChild(row);
+      });
+    }
+
+    function renderMarketData() {
+      const container = document.getElementById("marketCards");
+      container.innerHTML = "";
+
+      getMarketData().forEach((quote) => {
+        const directionClass = quote.changePercent >= 0 ? "positive" : "negative";
+        const card = document.createElement("article");
+        card.className = "market-card";
+        card.innerHTML = `
+          <div>
+            <strong>${escapeHtml(quote.symbol)}</strong>
+            <span>${escapeHtml(quote.name)}</span>
+          </div>
+          <div>
+            <strong>${money.format(quote.price)}</strong>
+            <span class="${directionClass}">${quote.changePercent >= 0 ? "+" : ""}${quote.changePercent.toFixed(2)}%</span>
+          </div>
+        `;
+        container.appendChild(card);
       });
     }
 
@@ -1514,6 +1626,62 @@
       document.getElementById("dashboardDcfEstimate").textContent = money.format(dcfEstimate);
     }
 
+    function getChartTheme() {
+      const isDark = document.body.dataset.theme === "dark";
+      return {
+        text: isDark ? "#d7deea" : "#172033",
+        muted: isDark ? "#9aa7b8" : "#647084",
+        grid: isDark ? "rgba(154, 167, 184, 0.18)" : "rgba(100, 112, 132, 0.18)"
+      };
+    }
+
+    function chartPlugins(title, legendPosition = "bottom") {
+      const theme = getChartTheme();
+      return {
+        title: {
+          display: true,
+          text: title,
+          color: theme.text,
+          font: { size: 14, weight: "700" },
+          padding: { bottom: 14 }
+        },
+        legend: {
+          position: legendPosition,
+          labels: {
+            color: theme.muted,
+            boxWidth: 12,
+            padding: 14,
+            font: { weight: "700" }
+          }
+        },
+        tooltip: {
+          backgroundColor: document.body.dataset.theme === "dark" ? "#111827" : "#ffffff",
+          titleColor: theme.text,
+          bodyColor: theme.text,
+          borderColor: theme.grid,
+          borderWidth: 1,
+          padding: 10
+        }
+      };
+    }
+
+    function chartScales(stacked = false, precision = 0) {
+      const theme = getChartTheme();
+      return {
+        x: {
+          stacked,
+          grid: { color: theme.grid },
+          ticks: { color: theme.muted, font: { weight: "700" } }
+        },
+        y: {
+          beginAtZero: true,
+          stacked,
+          grid: { color: theme.grid },
+          ticks: { color: theme.muted, precision, font: { weight: "700" } }
+        }
+      };
+    }
+
     function renderCharts() {
       renderExpenseChart();
       renderMonthlyTrendChart();
@@ -1524,6 +1692,7 @@
       renderDemoReferralChart();
       renderDemoMonthlyChart();
       renderDemoBudgetChart();
+      renderMarketPerformanceChart();
     }
 
     function renderExpenseChart() {
@@ -1547,7 +1716,7 @@
         },
         options: {
           maintainAspectRatio: false,
-          plugins: { legend: { position: "bottom" } }
+          plugins: chartPlugins("Spending by category")
         }
       });
     }
@@ -1574,8 +1743,11 @@
         },
         options: {
           maintainAspectRatio: false,
-          scales: { y: { beginAtZero: true } },
-          plugins: { legend: { display: false } }
+          scales: chartScales(false, 2),
+          plugins: {
+            ...chartPlugins("Monthly spending trend"),
+            legend: { display: false }
+          }
         }
       });
     }
@@ -1597,7 +1769,7 @@
         },
         options: {
           maintainAspectRatio: false,
-          plugins: { legend: { position: "bottom" } }
+          plugins: chartPlugins("Recruiting pipeline by status")
         }
       });
     }
@@ -1627,11 +1799,8 @@
         },
         options: {
           maintainAspectRatio: false,
-          scales: {
-            x: { stacked: true },
-            y: { beginAtZero: true, stacked: true }
-          },
-          plugins: { legend: { position: "bottom" } }
+          scales: chartScales(true),
+          plugins: chartPlugins("Referral outcomes")
         }
       });
     }
@@ -1661,8 +1830,11 @@
         },
         options: {
           maintainAspectRatio: false,
-          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
-          plugins: { legend: { display: false } }
+          scales: chartScales(),
+          plugins: {
+            ...chartPlugins("Applications by month"),
+            legend: { display: false }
+          }
         }
       });
     }
@@ -1684,7 +1856,7 @@
         },
         options: {
           maintainAspectRatio: false,
-          plugins: { legend: { position: "bottom" } }
+          plugins: chartPlugins("Demo status breakdown")
         }
       });
     }
@@ -1714,11 +1886,8 @@
         },
         options: {
           maintainAspectRatio: false,
-          scales: {
-            x: { stacked: true },
-            y: { beginAtZero: true, stacked: true }
-          },
-          plugins: { legend: { position: "bottom" } }
+          scales: chartScales(true),
+          plugins: chartPlugins("Demo referral outcomes")
         }
       });
     }
@@ -1748,8 +1917,11 @@
         },
         options: {
           maintainAspectRatio: false,
-          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
-          plugins: { legend: { display: false } }
+          scales: chartScales(),
+          plugins: {
+            ...chartPlugins("Demo monthly applications"),
+            legend: { display: false }
+          }
         }
       });
     }
@@ -1775,7 +1947,33 @@
         },
         options: {
           maintainAspectRatio: false,
-          plugins: { legend: { position: "bottom" } }
+          plugins: chartPlugins("Demo budget categories")
+        }
+      });
+    }
+
+    function renderMarketPerformanceChart() {
+      const marketData = getMarketData();
+      const canvas = document.getElementById("marketPerformanceChart");
+
+      if (marketPerformanceChart) marketPerformanceChart.destroy();
+      marketPerformanceChart = new Chart(canvas, {
+        type: "bar",
+        data: {
+          labels: marketData.map((quote) => quote.symbol),
+          datasets: [{
+            label: "Daily move %",
+            data: marketData.map((quote) => quote.changePercent),
+            backgroundColor: marketData.map((quote) => quote.changePercent >= 0 ? "#14b8a6" : "#ef4444")
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: chartScales(),
+          plugins: {
+            ...chartPlugins("Sample daily market moves"),
+            legend: { display: false }
+          }
         }
       });
     }
