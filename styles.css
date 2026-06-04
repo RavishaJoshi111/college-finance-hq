@@ -61,14 +61,6 @@ button {
   text-transform: uppercase;
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
 .header-stats {
   display: flex;
   flex-wrap: wrap;
@@ -90,21 +82,6 @@ button {
   font-weight: 700;
 }
 
-.demo-button {
-  min-height: 38px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 6px;
-  padding: 9px 13px;
-  background: #ffffff;
-  color: var(--ink);
-  font-weight: 800;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
-}
-
-.demo-button:hover {
-  background: #ecfeff;
-}
-
 .app-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 24px auto 56px;
@@ -112,7 +89,7 @@ button {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
   margin-bottom: 20px;
   padding: 6px;
@@ -223,6 +200,15 @@ button {
 
 .recruiting-chart-grid .wide-panel {
   grid-column: 1 / -1;
+}
+
+.demo-hero {
+  background: linear-gradient(135deg, #ffffff 0%, #edf6ff 50%, #f3f8ee 100%);
+}
+
+.demo-metrics {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin-bottom: 16px;
 }
 
 .metric-card,
@@ -483,13 +469,6 @@ tr:last-child td {
   color: var(--danger);
 }
 
-.success-message {
-  min-height: 24px;
-  margin: -6px 0 14px;
-  color: #047857;
-  font-weight: 800;
-}
-
 .result-pill {
   width: fit-content;
   margin: 14px 0 0;
@@ -510,7 +489,6 @@ tr:last-child td {
     flex-direction: column;
   }
 
-  .header-actions,
   .header-stats {
     justify-content: flex-start;
   }
@@ -519,6 +497,7 @@ tr:last-child td {
   .metric-grid,
   .dashboard-grid,
   .recruiting-metrics,
+  .demo-metrics,
   .panel-grid,
   .form-grid,
   .inline-form {

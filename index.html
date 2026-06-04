@@ -13,13 +13,10 @@
       <p class="eyebrow">Student planning workspace</p>
       <h1>College Finance HQ</h1>
     </div>
-    <div class="header-actions">
-      <div class="header-stats">
-        <span id="headerSavings">$0 saved</span>
-        <span id="headerApplications">0 applications</span>
-        <span id="headerRecruitingApplications">0 recruiting records</span>
-      </div>
-      <button class="demo-button" type="button" id="loadDemoDataButton">Load Demo Data</button>
+    <div class="header-stats">
+      <span id="headerSavings">$0 saved</span>
+      <span id="headerApplications">0 applications</span>
+      <span id="headerRecruitingApplications">0 recruiting records</span>
     </div>
   </header>
 
@@ -30,6 +27,7 @@
       <button type="button" data-tab="careerTab">Career</button>
       <button type="button" data-tab="recruitingTab">Recruiting</button>
       <button type="button" data-tab="investingTab">Investing</button>
+      <button type="button" data-tab="demoTab">Demo</button>
     </nav>
 
     <section id="dashboardTab" class="tab-content active">
@@ -40,7 +38,6 @@
         </div>
         <p class="dashboard-summary" id="dashboardSummary">Add your income, expenses, applications, and watchlist to build your HQ.</p>
       </div>
-      <p class="success-message" id="demoSuccessMessage" role="status" aria-live="polite"></p>
 
       <div class="metric-grid">
         <article class="metric-card">
@@ -605,6 +602,155 @@
         </section>
       </div>
     </section>
+
+    <section id="demoTab" class="tab-content">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Portfolio showcase</p>
+          <h2>Demo environment</h2>
+        </div>
+        <p class="dashboard-summary">A preloaded recruiter-facing view that demonstrates College Finance HQ without touching user data.</p>
+      </div>
+
+      <div class="recruiting-hero demo-hero">
+        <div>
+          <p class="eyebrow">Sample student profile</p>
+          <h3>Finance major tracking recruiting outcomes, networking follow-ups, investing targets, and monthly budget health.</h3>
+        </div>
+        <span class="result-pill">Demo data only</span>
+      </div>
+
+      <div class="metric-grid demo-metrics">
+        <article class="metric-card">
+          <span>Monthly income</span>
+          <strong id="demoIncome">$0.00</strong>
+        </article>
+        <article class="metric-card">
+          <span>Monthly spending</span>
+          <strong id="demoSpending">$0.00</strong>
+        </article>
+        <article class="metric-card">
+          <span>Savings rate</span>
+          <strong id="demoSavingsRate">0%</strong>
+        </article>
+        <article class="metric-card">
+          <span>Top expense category</span>
+          <strong id="demoTopCategory">None</strong>
+        </article>
+        <article class="metric-card accent-card">
+          <span>Applications</span>
+          <strong id="demoTotalApplications">0</strong>
+        </article>
+        <article class="metric-card accent-card">
+          <span>Offer rate</span>
+          <strong id="demoOfferRate">0%</strong>
+        </article>
+      </div>
+
+      <div class="panel-grid recruiting-chart-grid">
+        <section class="panel">
+          <h3>Sample recruiting statuses</h3>
+          <div class="chart-wrap">
+            <canvas id="demoStatusChart"></canvas>
+          </div>
+        </section>
+        <section class="panel">
+          <h3>Sample referral outcomes</h3>
+          <div class="chart-wrap">
+            <canvas id="demoReferralChart"></canvas>
+          </div>
+        </section>
+        <section class="panel">
+          <h3>Sample monthly applications</h3>
+          <div class="chart-wrap">
+            <canvas id="demoMonthlyChart"></canvas>
+          </div>
+        </section>
+        <section class="panel">
+          <h3>Sample budget categories</h3>
+          <div class="chart-wrap">
+            <canvas id="demoBudgetChart"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <div class="panel-grid">
+        <section class="panel">
+          <h3>Sample application tracker</h3>
+          <div class="table-wrap compact">
+            <table id="demoApplicationTable">
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Role</th>
+                  <th>Date applied</th>
+                  <th>Status</th>
+                  <th>Referral</th>
+                  <th>Interview</th>
+                  <th>Offer</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Sample networking CRM</h3>
+          <div class="table-wrap compact">
+            <table id="demoNetworkingTable">
+              <thead>
+                <tr>
+                  <th>Contact</th>
+                  <th>Company</th>
+                  <th>Role</th>
+                  <th>Last contacted</th>
+                  <th>Follow-up</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div class="panel-grid">
+        <section class="panel">
+          <h3>Sample stock watchlist</h3>
+          <div class="table-wrap compact">
+            <table id="demoWatchlistTable">
+              <thead>
+                <tr>
+                  <th>Ticker</th>
+                  <th>Company</th>
+                  <th>Target</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Sample dashboard readout</h3>
+          <p class="dashboard-callout" id="demoDashboardReadout">Demo metrics loading.</p>
+          <dl class="mini-list">
+            <div>
+              <dt>Response rate</dt>
+              <dd id="demoResponseRate">0%</dd>
+            </div>
+            <div>
+              <dt>Interview rate</dt>
+              <dd id="demoInterviewRate">0%</dd>
+            </div>
+            <div>
+              <dt>Referral success rate</dt>
+              <dd id="demoReferralSuccessRate">0%</dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+    </section>
   </main>
 
   <script>
@@ -628,9 +774,23 @@
     let recruitingStatusChart;
     let recruitingReferralChart;
     let recruitingMonthlyChart;
+    let demoStatusChart;
+    let demoReferralChart;
+    let demoMonthlyChart;
+    let demoBudgetChart;
 
     const today = new Date();
     const thisMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+    const demoIncome = 3200;
+    const demoExpenses = [
+      { name: "Apartment rent", amount: 1350, category: "Housing", month: "2026-01" },
+      { name: "Groceries", amount: 430, category: "Food", month: "2026-01" },
+      { name: "Subway and rideshare", amount: 185, category: "Transportation", month: "2026-02" },
+      { name: "Textbooks and prep", amount: 260, category: "School", month: "2026-02" },
+      { name: "Coffee chats", amount: 120, category: "Networking", month: "2026-03" },
+      { name: "Professional clothing", amount: 310, category: "Career", month: "2026-03" },
+      { name: "Health and wellness", amount: 155, category: "Health", month: "2026-04" }
+    ];
     const demoWatchlist = [
       { demoId: "demo-msft", ticker: "MSFT", company: "Microsoft", target: 465 },
       { demoId: "demo-nvda", ticker: "NVDA", company: "NVIDIA", target: 145 },
@@ -763,6 +923,7 @@
       }
     ];
 
+    removeStoredDemoItems();
     document.getElementById("expenseMonth").value = thisMonth;
     document.getElementById("income").value = localStorage.getItem(storageKeys.income) || "";
 
@@ -774,8 +935,6 @@
       localStorage.setItem(storageKeys.income, document.getElementById("income").value);
       renderAll();
     });
-
-    document.getElementById("loadDemoDataButton").addEventListener("click", loadDemoData);
 
     document.getElementById("budgetForm").addEventListener("submit", (event) => {
       event.preventDefault();
@@ -935,23 +1094,25 @@
       localStorage.setItem(key, JSON.stringify(value));
     }
 
-    function loadDemoData() {
-      watchlist = mergeDemoItems(watchlist, demoWatchlist);
-      recruitingRecords = mergeDemoItems(recruitingRecords, demoRecruitingRecords);
-      networkingContacts = mergeDemoItems(networkingContacts, demoNetworkingContacts);
-      save(storageKeys.watchlist, watchlist);
-      save(storageKeys.recruiting, recruitingRecords);
-      save(storageKeys.networking, networkingContacts);
-      renderAll();
-      document.getElementById("demoSuccessMessage").textContent = "Demo data loaded successfully.";
-      const dashboardButton = document.querySelector("[data-tab='dashboardTab']");
-      showTab("dashboardTab", dashboardButton);
-    }
+    function removeStoredDemoItems() {
+      const cleanedWatchlist = watchlist.filter((item) => !item.demoId);
+      const cleanedRecruitingRecords = recruitingRecords.filter((item) => !item.demoId);
+      const cleanedNetworkingContacts = networkingContacts.filter((item) => !item.demoId);
 
-    function mergeDemoItems(existingItems, demoItems) {
-      const existingDemoIds = new Set(existingItems.map((item) => item.demoId).filter(Boolean));
-      const newItems = demoItems.filter((item) => !existingDemoIds.has(item.demoId));
-      return [...existingItems, ...newItems];
+      if (cleanedWatchlist.length !== watchlist.length) {
+        watchlist = cleanedWatchlist;
+        save(storageKeys.watchlist, watchlist);
+      }
+
+      if (cleanedRecruitingRecords.length !== recruitingRecords.length) {
+        recruitingRecords = cleanedRecruitingRecords;
+        save(storageKeys.recruiting, recruitingRecords);
+      }
+
+      if (cleanedNetworkingContacts.length !== networkingContacts.length) {
+        networkingContacts = cleanedNetworkingContacts;
+        save(storageKeys.networking, networkingContacts);
+      }
     }
 
     function renderAll() {
@@ -961,6 +1122,7 @@
       renderRecruiting();
       renderNetworking();
       renderDashboard();
+      renderDemo();
       renderCalculators();
       renderCharts();
     }
@@ -1135,8 +1297,13 @@
 
     function getTopCategory() {
       if (!expenses.length) return "None yet";
+      return getTopCategoryFor(expenses);
+    }
 
-      const totals = expenses.reduce((grouped, expense) => {
+    function getTopCategoryFor(expenseList) {
+      if (!expenseList.length) return "None yet";
+
+      const totals = expenseList.reduce((grouped, expense) => {
         grouped[expense.category] = (grouped[expense.category] || 0) + expense.amount;
         return grouped;
       }, {});
@@ -1224,6 +1391,82 @@
       });
     }
 
+    function renderDemo() {
+      const totalSpending = demoExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+      const savings = demoIncome - totalSpending;
+      const savingsRate = demoIncome ? (savings / demoIncome) * 100 : 0;
+      const offers = demoRecruitingRecords.filter(isOffer).length;
+      const responses = demoRecruitingRecords.filter((record) => record.hireVue === "Yes" || record.interview === "Yes" || isOffer(record) || ["HireVue", "Interviewing"].includes(record.status)).length;
+      const interviews = demoRecruitingRecords.filter((record) => record.interview === "Yes" || ["Interviewing", "Offer", "Accepted"].includes(record.status)).length;
+      const referred = demoRecruitingRecords.filter((record) => record.referral === "Yes");
+      const referralOffers = referred.filter(isOffer).length;
+
+      document.getElementById("demoIncome").textContent = money.format(demoIncome);
+      document.getElementById("demoSpending").textContent = money.format(totalSpending);
+      document.getElementById("demoSavingsRate").textContent = `${Math.round(savingsRate)}%`;
+      document.getElementById("demoTopCategory").textContent = getTopCategoryFor(demoExpenses);
+      document.getElementById("demoTotalApplications").textContent = demoRecruitingRecords.length;
+      document.getElementById("demoOfferRate").textContent = formatPercent(offers, demoRecruitingRecords.length);
+      document.getElementById("demoResponseRate").textContent = formatPercent(responses, demoRecruitingRecords.length);
+      document.getElementById("demoInterviewRate").textContent = formatPercent(interviews, demoRecruitingRecords.length);
+      document.getElementById("demoReferralSuccessRate").textContent = formatPercent(referralOffers, referred.length);
+      document.getElementById("demoDashboardReadout").textContent = `${money.format(savings)} projected monthly savings with ${offers} offers from ${demoRecruitingRecords.length} tracked applications.`;
+      renderDemoApplicationTable();
+      renderDemoNetworkingTable();
+      renderDemoWatchlistTable();
+    }
+
+    function renderDemoApplicationTable() {
+      const tbody = document.querySelector("#demoApplicationTable tbody");
+      tbody.innerHTML = "";
+
+      demoRecruitingRecords.forEach((record) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${escapeHtml(record.company)}</td>
+          <td>${escapeHtml(record.role)}</td>
+          <td>${escapeHtml(record.dateApplied)}</td>
+          <td><span class="status-chip">${escapeHtml(record.status)}</span></td>
+          <td>${escapeHtml(record.referral)}</td>
+          <td>${escapeHtml(record.interview)}</td>
+          <td>${escapeHtml(record.offer)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function renderDemoNetworkingTable() {
+      const tbody = document.querySelector("#demoNetworkingTable tbody");
+      tbody.innerHTML = "";
+
+      demoNetworkingContacts.forEach((contact) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${escapeHtml(contact.name)}</td>
+          <td>${escapeHtml(contact.company)}</td>
+          <td>${escapeHtml(contact.role)}</td>
+          <td>${escapeHtml(contact.lastContacted)}</td>
+          <td>${escapeHtml(contact.followUpDate)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function renderDemoWatchlistTable() {
+      const tbody = document.querySelector("#demoWatchlistTable tbody");
+      tbody.innerHTML = "";
+
+      demoWatchlist.forEach((stock) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${escapeHtml(stock.ticker)}</td>
+          <td>${escapeHtml(stock.company)}</td>
+          <td>${money.format(stock.target)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
     function renderCalculators() {
       const score = Number(document.getElementById("riskTimeline").value)
         + Number(document.getElementById("riskReaction").value)
@@ -1272,6 +1515,10 @@
       renderRecruitingStatusChart();
       renderRecruitingReferralChart();
       renderRecruitingMonthlyChart();
+      renderDemoStatusChart();
+      renderDemoReferralChart();
+      renderDemoMonthlyChart();
+      renderDemoBudgetChart();
     }
 
     function renderExpenseChart() {
@@ -1411,6 +1658,119 @@
           maintainAspectRatio: false,
           scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
           plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderDemoStatusChart() {
+      const statuses = ["Applied", "HireVue", "Interviewing", "Offer", "Rejected", "Accepted"];
+      const totals = statuses.map((status) => demoRecruitingRecords.filter((record) => record.status === status).length);
+      const canvas = document.getElementById("demoStatusChart");
+
+      if (demoStatusChart) demoStatusChart.destroy();
+      demoStatusChart = new Chart(canvas, {
+        type: "doughnut",
+        data: {
+          labels: statuses,
+          datasets: [{
+            data: totals,
+            backgroundColor: ["#2563eb", "#8b5cf6", "#14b8a6", "#22c55e", "#ef4444", "#0f766e"]
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } }
+        }
+      });
+    }
+
+    function renderDemoReferralChart() {
+      const referred = demoRecruitingRecords.filter((record) => record.referral === "Yes");
+      const nonReferred = demoRecruitingRecords.filter((record) => record.referral !== "Yes");
+      const canvas = document.getElementById("demoReferralChart");
+
+      if (demoReferralChart) demoReferralChart.destroy();
+      demoReferralChart = new Chart(canvas, {
+        type: "bar",
+        data: {
+          labels: ["Referral", "No referral"],
+          datasets: [
+            {
+              label: "Offer",
+              data: [referred.filter(isOffer).length, nonReferred.filter(isOffer).length],
+              backgroundColor: "#14b8a6"
+            },
+            {
+              label: "No offer",
+              data: [referred.filter((record) => !isOffer(record)).length, nonReferred.filter((record) => !isOffer(record)).length],
+              backgroundColor: "#94a3b8"
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: {
+            x: { stacked: true },
+            y: { beginAtZero: true, stacked: true }
+          },
+          plugins: { legend: { position: "bottom" } }
+        }
+      });
+    }
+
+    function renderDemoMonthlyChart() {
+      const monthTotals = demoRecruitingRecords.reduce((grouped, record) => {
+        const month = record.dateApplied.slice(0, 7);
+        grouped[month] = (grouped[month] || 0) + 1;
+        return grouped;
+      }, {});
+      const labels = Object.keys(monthTotals).sort();
+      const canvas = document.getElementById("demoMonthlyChart");
+
+      if (demoMonthlyChart) demoMonthlyChart.destroy();
+      demoMonthlyChart = new Chart(canvas, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            label: "Applications",
+            data: labels.map((month) => monthTotals[month]),
+            borderColor: "#2563eb",
+            backgroundColor: "rgba(37, 99, 235, 0.16)",
+            fill: true,
+            tension: 0.35
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderDemoBudgetChart() {
+      const categoryTotals = demoExpenses.reduce((grouped, expense) => {
+        grouped[expense.category] = (grouped[expense.category] || 0) + expense.amount;
+        return grouped;
+      }, {});
+      const labels = Object.keys(categoryTotals);
+      const data = Object.values(categoryTotals);
+      const canvas = document.getElementById("demoBudgetChart");
+
+      if (demoBudgetChart) demoBudgetChart.destroy();
+      demoBudgetChart = new Chart(canvas, {
+        type: "doughnut",
+        data: {
+          labels,
+          datasets: [{
+            data,
+            backgroundColor: ["#2563eb", "#14b8a6", "#f97316", "#8b5cf6", "#eab308", "#ef4444", "#64748b"]
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } }
         }
       });
     }
