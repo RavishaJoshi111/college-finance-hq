@@ -1,22 +1,28 @@
 # College Finance HQ
 
-College Finance HQ is a web-based finance, career, and recruiting analytics platform built for college students. It combines budgeting, investing tools, internship tracking, and a Recruiting Intelligence Dashboard so students can present a polished finance + analytics project while managing their real application pipeline.
+College Finance HQ is a web-based finance, recruiting analytics, and career management platform built for college students. It combines budgeting, internship tracking, recruiting intelligence, networking CRM tools, investing resources, and market-style dashboard elements into one student planning workspace.
 
 ## Features
-- Career and internship tracker with company, role, application date, status, referral, interview date, and notes
-- Finance dashboard with total income, total spending, savings rate, top expense category, and monthly trend
+- Finance dashboard with income, spending, savings rate, top expense category, monthly trends, and improved visualizations
 - Budget builder with categorized monthly expenses
+- Career and internship tracker with company, role, application date, status, referral, interview date, and notes
 - Recruiting Intelligence Dashboard with application funnel metrics, referral analysis, and monthly application trends
-- Recruiting Analytics records for company, role, date applied, status, referral, HireVue, interview, offer, and notes
-- Auto-calculated recruiting metrics for total applications, response rate, interview rate, offer rate, referral success rate, and non-referral success rate
 - Networking CRM for contacts, companies, roles, last contacted dates, follow-up dates, and notes
-- Dedicated Demo tab with preloaded sample dashboard, recruiting, networking CRM, watchlist, and analytics charts
-- Investing hub with stock watchlist
-- Risk tolerance quiz
-- Compound interest calculator
-- Basic DCF calculator
-- Interactive dashboard charts
+- Investing hub with stock watchlist, market data module, risk tolerance quiz, compound interest calculator, and basic DCF calculator
+- Scrolling stock ticker tape with green/red market movement styling
+- Dark mode toggle with saved localStorage preference
+- Horizontal SaaS-style navigation
+- Recruiter-facing Demo tab with preloaded sample dashboard, recruiting, networking CRM, watchlist, and analytics charts
+- Footer attribution
 - Local browser data storage with no external APIs or API keys
+
+## Portfolio Highlights
+- Recruiting Intelligence Dashboard
+- Networking CRM
+- Scrolling Market Ticker
+- Investing Hub
+- Demo Environment
+- GitHub Pages Deployment
 
 ## Built With
 - HTML
@@ -24,9 +30,3 @@ College Finance HQ is a web-based finance, career, and recruiting analytics plat
 - JavaScript
 - Chart.js
 - GitHub Pages
-
-## Future Features
-- Student loan calculator
-- GPA calculator
-- Financial goal tracker
-- Exportable recruiting reports
