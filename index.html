@@ -1412,7 +1412,7 @@
         tbody.appendChild(row);
       });
 
-      document.getElementById("headerApplications").textContent = `${careers.length} applications`;
+      document.getElementById("headerApplications").textContent = `${careers.length} ${careers.length === 1 ? "application" : "applications"}`;
     }
 
     function renderWatchlist() {
