@@ -1395,12 +1395,18 @@
       document.getElementById("dashboardNextInterview").textContent = getNextInterview();
       document.getElementById("dashboardRecentApplication").textContent = getRecentApplication();
       document.getElementById("dashboardSummary").textContent = getDashboardSummary(income, totalSpending, careers.length, watchlist.length);
+      document.getElementById("dashboardRiskProfile").textContent = "Use Investing tab";
+      document.getElementById("dashboardCompoundProjection").textContent = "-";
+      document.getElementById("dashboardDcfEstimate").textContent = "-";
       document.getElementById("headerSavings").textContent = `${money.format(Math.max(savings, 0))} saved`;
       renderDashboardCareerTable();
       renderDashboardCategoryList();
 
       const feedback = document.getElementById("budgetFeedback");
-      if (savings > 0) {
+      if (!income && !expenses.length) {
+        feedback.textContent = "Add income and expenses to see your budget summary.";
+        feedback.className = "feedback";
+      } else if (savings > 0) {
         feedback.textContent = `You are currently saving ${money.format(savings)}.`;
         feedback.className = "feedback positive";
       } else if (savings === 0) {
@@ -1621,9 +1627,6 @@
       const terminalValue = (projectedCashFlow * multiple) / ((1 + discount) ** 5);
       const dcfEstimate = dcfValue + terminalValue;
       document.getElementById("dcfResult").textContent = money.format(dcfEstimate);
-      document.getElementById("dashboardRiskProfile").textContent = riskProfile;
-      document.getElementById("dashboardCompoundProjection").textContent = money.format(compoundValue);
-      document.getElementById("dashboardDcfEstimate").textContent = money.format(dcfEstimate);
     }
 
     function getChartTheme() {
