@@ -23,27 +23,9 @@
     </div>
   </header>
 
-  <section class="ticker-tape" aria-label="Sample market ticker">
-    <div class="ticker-track">
-      <span>SPY <strong class="positive">+0.42%</strong></span>
-      <span>QQQ <strong class="positive">+0.68%</strong></span>
-      <span>JPM <strong class="negative">-0.18%</strong></span>
-      <span>GS <strong class="positive">+0.25%</strong></span>
-      <span>MS <strong class="negative">-0.31%</strong></span>
-      <span>AAPL <strong class="positive">+0.74%</strong></span>
-      <span>NVDA <strong class="positive">+1.28%</strong></span>
-      <span>V <strong class="negative">-0.09%</strong></span>
-      <span>BRK.B <strong class="positive">+0.16%</strong></span>
-      <span>SPY <strong class="positive">+0.42%</strong></span>
-      <span>QQQ <strong class="positive">+0.68%</strong></span>
-      <span>JPM <strong class="negative">-0.18%</strong></span>
-      <span>GS <strong class="positive">+0.25%</strong></span>
-      <span>MS <strong class="negative">-0.31%</strong></span>
-      <span>AAPL <strong class="positive">+0.74%</strong></span>
-      <span>NVDA <strong class="positive">+1.28%</strong></span>
-      <span>V <strong class="negative">-0.09%</strong></span>
-      <span>BRK.B <strong class="positive">+0.16%</strong></span>
-    </div>
+  <section class="ticker-tape" aria-label="Market ticker">
+    <div class="ticker-meta">Market data may be delayed.</div>
+    <div class="ticker-track" id="tickerTrack"></div>
   </section>
 
   <main class="app-shell">
@@ -531,12 +513,12 @@
         <section class="panel wide-panel">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">Sample market data mode</p>
+              <p class="eyebrow">Market data mode</p>
               <h3>Market snapshot</h3>
             </div>
-            <span class="result-pill">Demo quotes</span>
+            <span class="result-pill" id="marketDataStatus">Loading live data</span>
           </div>
-          <p class="panel-note">Uses safe sample data by default so the app works without API keys.</p>
+          <p class="panel-note">Market data may be delayed. Falls back to sample data if the live source is unavailable.</p>
           <div class="market-grid" id="marketCards"></div>
           <div class="chart-wrap compact-chart">
             <canvas id="marketPerformanceChart"></canvas>
@@ -826,9 +808,22 @@
     let demoMonthlyChart;
     let demoBudgetChart;
     let marketPerformanceChart;
+    let marketData = [];
+    let marketDataSource = "Sample fallback data";
 
     const today = new Date();
     const thisMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+    const marketSymbols = [
+      { symbol: "SPY", yahoo: "SPY", stooq: "spy.us", stockPricesType: "etfs", name: "S&P 500 ETF" },
+      { symbol: "QQQ", yahoo: "QQQ", stooq: "qqq.us", stockPricesType: "etfs", name: "Nasdaq 100 ETF" },
+      { symbol: "JPM", yahoo: "JPM", stooq: "jpm.us", stockPricesType: "stocks", name: "JPMorgan Chase" },
+      { symbol: "GS", yahoo: "GS", stooq: "gs.us", stockPricesType: "stocks", name: "Goldman Sachs" },
+      { symbol: "MS", yahoo: "MS", stooq: "ms.us", stockPricesType: "stocks", name: "Morgan Stanley" },
+      { symbol: "AAPL", yahoo: "AAPL", stooq: "aapl.us", stockPricesType: "stocks", name: "Apple" },
+      { symbol: "NVDA", yahoo: "NVDA", stooq: "nvda.us", stockPricesType: "stocks", name: "NVIDIA" },
+      { symbol: "V", yahoo: "V", stooq: "v.us", stockPricesType: "stocks", name: "Visa" },
+      { symbol: "BRK.B", yahoo: "BRK-B", stooq: "brk.b.us", stockPricesType: "stocks", name: "Berkshire Hathaway" }
+    ];
     const sampleMarketData = [
       { symbol: "SPY", name: "S&P 500 ETF", price: 534.88, change: 2.26, changePercent: 0.42 },
       { symbol: "QQQ", name: "Nasdaq 100 ETF", price: 462.14, change: 3.12, changePercent: 0.68 },
@@ -984,6 +979,7 @@
 
     removeStoredDemoItems();
     applyStoredTheme();
+    marketData = sampleMarketData;
     document.getElementById("expenseMonth").value = thisMonth;
     document.getElementById("income").value = localStorage.getItem(storageKeys.income) || "";
 
@@ -997,6 +993,7 @@
     });
 
     document.getElementById("themeToggle").addEventListener("click", toggleTheme);
+    loadLiveMarketData();
 
     document.getElementById("budgetForm").addEventListener("submit", (event) => {
       event.preventDefault();
@@ -1177,15 +1174,174 @@
       toggle.setAttribute("aria-pressed", String(isDark));
     }
 
-    // Future integration point: replace this sample-data return with a secure backend or serverless
-    // market-data request. Do not place private API keys in this client-side file.
-    function getMarketData() {
+    // Live no-key quote source for static hosting. If a production API is added later,
+    // call it through a secure backend/serverless function; never expose private API keys here.
+    async function loadLiveMarketData() {
+      const liveSources = [
+        {
+          name: "StockPrices.dev live market data",
+          load: fetchStockPricesQuotes
+        },
+        {
+          name: "Yahoo Finance spark market data",
+          load: fetchYahooSparkQuotes
+        },
+        {
+          name: "Stooq live market data",
+          load: fetchStooqQuotes
+        }
+      ];
+
       try {
-        return sampleMarketData;
+        const source = await fetchFirstAvailableMarketSource(liveSources);
+        marketData = source.quotes;
+        marketDataSource = source.name;
       } catch (error) {
-        console.warn("Market data unavailable; falling back to sample quotes.", error);
-        return sampleMarketData;
+        console.warn("Live market data unavailable; using sample fallback data.", error);
+        marketData = sampleMarketData;
+        marketDataSource = "Sample fallback data";
       }
+      renderMarketData();
+      renderCharts();
+    }
+
+    async function fetchFirstAvailableMarketSource(sources) {
+      let lastError;
+      for (const source of sources) {
+        try {
+          const quotes = await source.load();
+          if (quotes.length === marketSymbols.length) {
+            return { name: source.name, quotes };
+          }
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error("No live market source returned a complete quote set.");
+    }
+
+    async function fetchStockPricesQuotes() {
+      const quotes = await Promise.all(marketSymbols.map(fetchStockPricesQuote));
+      return sortQuotesByMarketList(quotes);
+    }
+
+    async function fetchStockPricesQuote(symbolInfo) {
+      const url = `https://stockprices.dev/api/${symbolInfo.stockPricesType}/${encodeURIComponent(symbolInfo.symbol)}`;
+      const data = await requestJson(url);
+      const price = parseMarketNumber(data.Price);
+      const change = parseMarketNumber(data.ChangeAmount);
+      const changePercent = parseMarketNumber(data.ChangePercentage);
+
+      if (![price, change, changePercent].every(Number.isFinite)) {
+        throw new Error(`Invalid StockPrices.dev data for ${symbolInfo.symbol}`);
+      }
+
+      return {
+        symbol: symbolInfo.symbol,
+        name: data.Name || symbolInfo.name,
+        price,
+        change,
+        changePercent
+      };
+    }
+
+    async function fetchYahooSparkQuotes() {
+      const symbols = marketSymbols.map((symbolInfo) => symbolInfo.yahoo).join(",");
+      const url = `https://query1.finance.yahoo.com/v7/finance/spark?symbols=${encodeURIComponent(symbols)}&range=1d&interval=1d`;
+      const data = await requestJson(url);
+      const results = data.spark?.result || [];
+      const quotes = results.map(parseYahooSparkQuote).filter(Boolean);
+      return sortQuotesByMarketList(quotes);
+    }
+
+    function parseYahooSparkQuote(result) {
+      const meta = result.response?.[0]?.meta;
+      if (!meta) return null;
+
+      const symbolInfo = marketSymbols.find((item) => item.yahoo === result.symbol);
+      if (!symbolInfo) return null;
+
+      const price = parseMarketNumber(meta.regularMarketPrice);
+      const previousClose = parseMarketNumber(meta.chartPreviousClose);
+      if (!Number.isFinite(price) || !Number.isFinite(previousClose) || previousClose === 0) return null;
+
+      const change = price - previousClose;
+      const changePercent = (change / previousClose) * 100;
+      return {
+        symbol: symbolInfo.symbol,
+        name: meta.longName || meta.shortName || symbolInfo.name,
+        price,
+        change,
+        changePercent
+      };
+    }
+
+    async function fetchStooqQuotes() {
+      const quotes = await Promise.all(marketSymbols.map(fetchStooqQuote));
+      return sortQuotesByMarketList(quotes);
+    }
+
+    async function fetchStooqQuote(symbolInfo) {
+      const url = `https://stooq.com/q/l/?s=${encodeURIComponent(symbolInfo.stooq)}&f=sd2t2ohlcv&h&e=csv`;
+      const csv = await requestText(url);
+      const [, row] = csv.trim().split(/\r?\n/);
+      if (!row) throw new Error(`Missing quote row for ${symbolInfo.symbol}`);
+
+      const [rawSymbol, date, time, open, high, low, close] = row.split(",");
+      const openPrice = Number(open);
+      const closePrice = Number(close);
+      if (!rawSymbol || rawSymbol.includes("N/D") || !Number.isFinite(openPrice) || !Number.isFinite(closePrice)) {
+        throw new Error(`Invalid quote data for ${symbolInfo.symbol}`);
+      }
+
+      const change = closePrice - openPrice;
+      const changePercent = openPrice ? (change / openPrice) * 100 : 0;
+      return {
+        symbol: symbolInfo.symbol,
+        name: symbolInfo.name,
+        price: closePrice,
+        change,
+        changePercent,
+        date,
+        time
+      };
+    }
+
+    function sortQuotesByMarketList(quotes) {
+      return marketSymbols
+        .map((symbolInfo) => quotes.find((quote) => quote.symbol === symbolInfo.symbol))
+        .filter(Boolean);
+    }
+
+    function requestJson(url) {
+      return requestText(url).then((text) => JSON.parse(text));
+    }
+
+    function requestText(url) {
+      if (typeof fetch === "function") {
+        return fetch(url).then((response) => {
+          if (!response.ok) throw new Error(`Market request failed with ${response.status}`);
+          return response.text();
+        });
+      }
+
+      return new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.open("GET", url, true);
+        request.onload = () => {
+          if (request.status >= 200 && request.status < 300) {
+            resolve(request.responseText);
+          } else {
+            reject(new Error(`Market request failed with ${request.status}`));
+          }
+        };
+        request.onerror = () => reject(new Error("Market request failed"));
+        request.send();
+      });
+    }
+
+    function getMarketData() {
+      return marketData.length ? marketData : sampleMarketData;
     }
 
     function removeStoredDemoItems() {
@@ -1276,9 +1432,13 @@
 
     function renderMarketData() {
       const container = document.getElementById("marketCards");
+      const status = document.getElementById("marketDataStatus");
+      const quotes = getMarketData();
       container.innerHTML = "";
+      status.textContent = isLiveMarketData() ? `Live via ${marketDataSource.split(" ")[0]}` : "Sample fallback";
+      renderTicker(quotes);
 
-      getMarketData().forEach((quote) => {
+      quotes.forEach((quote) => {
         const directionClass = quote.changePercent >= 0 ? "positive" : "negative";
         const card = document.createElement("article");
         card.className = "market-card";
@@ -1289,10 +1449,23 @@
           </div>
           <div>
             <strong>${money.format(quote.price)}</strong>
-            <span class="${directionClass}">${quote.changePercent >= 0 ? "+" : ""}${quote.changePercent.toFixed(2)}%</span>
+            <span class="${directionClass}">${formatSignedPercent(quote.changePercent)}</span>
           </div>
         `;
         container.appendChild(card);
+      });
+    }
+
+    function renderTicker(quotes) {
+      const ticker = document.getElementById("tickerTrack");
+      const tickerItems = [...quotes, ...quotes];
+      ticker.innerHTML = "";
+
+      tickerItems.forEach((quote) => {
+        const directionClass = quote.changePercent >= 0 ? "positive" : "negative";
+        const item = document.createElement("span");
+        item.innerHTML = `${escapeHtml(quote.symbol)} <strong class="${directionClass}">${formatSignedPercent(quote.changePercent)}</strong>`;
+        ticker.appendChild(item);
       });
     }
 
@@ -1972,13 +2145,17 @@
         },
         options: {
           maintainAspectRatio: false,
-          scales: chartScales(),
+          scales: chartScales(false, 2),
           plugins: {
-            ...chartPlugins("Sample daily market moves"),
+            ...chartPlugins(isLiveMarketData() ? "Daily market moves" : "Sample daily market moves"),
             legend: { display: false }
           }
         }
       });
+    }
+
+    function isLiveMarketData() {
+      return marketDataSource !== "Sample fallback data";
     }
 
     function isOffer(record) {
@@ -1988,6 +2165,16 @@
     function formatPercent(numerator, denominator) {
       if (!denominator) return "0%";
       return `${Math.round((numerator / denominator) * 100)}%`;
+    }
+
+    function formatSignedPercent(value) {
+      return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
+    }
+
+    function parseMarketNumber(value) {
+      if (typeof value === "number") return value;
+      if (typeof value !== "string") return NaN;
+      return Number(value.replace(/[$,%+]/g, ""));
     }
 
     function getRecruitingInsight(total, responses, interviews, offers, referredTotal, referralSuccesses, nonReferredTotal, nonReferralSuccesses) {

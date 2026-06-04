@@ -136,11 +136,21 @@ button {
   background: var(--ticker-bg);
 }
 
+.ticker-meta {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding-top: 8px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .ticker-track {
   display: flex;
   width: max-content;
   gap: 28px;
-  padding: 10px 0;
+  padding: 8px 0 10px;
   animation: ticker-scroll 34s linear infinite;
 }
 
